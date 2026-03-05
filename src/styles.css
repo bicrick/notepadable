@@ -220,7 +220,7 @@ body {
 }
 
 .footer-panel.expanded {
-  height: 150px;
+  height: 165px;
 }
 
 .footer-panel-content {
@@ -334,6 +334,23 @@ html[data-theme="light"] .theme-btn.active {
   font: 12px/1.45 system-ui, sans-serif;
   opacity: 0.6;
   margin: 0;
+}
+
+.footer-panel-credit {
+  font: 11px/1.4 system-ui, sans-serif;
+  opacity: 0.5;
+  margin: 8px 0 0;
+}
+
+.footer-panel-credit a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  opacity: 0.9;
+}
+
+.footer-panel-credit a:hover {
+  opacity: 1;
 }
 
 .footer-inner {

@@ -1,4 +1,4 @@
-# notepadable
+# <strong>notepad</strong><span style="opacity:0.5;font-weight:400">able</span>
 
 A minimalist text editor that encodes your entire document into the URL. No server, no database, no accounts -- just share a link and the recipient gets your full text.
 
@@ -55,3 +55,7 @@ Output goes to `dist/`. Deploy that folder to Vercel, Netlify, Cloudflare Pages,
 ## Inspired by
 
 [textarea.my](https://github.com/antonmedv/textarea) by Anton Medvedev -- a beautifully simple text editor that stores content in the URL hash. This project takes the same core idea and rebuilds it with better compression and a modern editor.
+
+---
+
+Made by [Bicrick](https://github.com/bicrick) · [bicrick.com](https://bicrick.com)

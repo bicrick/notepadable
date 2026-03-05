@@ -4,7 +4,7 @@ import { setTheme, getTheme, THEME_CHANGE_EVENT, type ThemeMode } from './theme-
 const TOAST_DURATION = 2000
 
 const PANEL_STORAGE_KEY = 'notepadable-footer-expanded'
-const PANEL_EXPANDED_HEIGHT = 150
+const PANEL_EXPANDED_HEIGHT = 165
 
 let footer: HTMLElement | null = null
 let footerPanel: HTMLElement | null = null
@@ -31,7 +31,7 @@ export function initToolbar(callbacks: {
       <div class="capacity-fill" id="capacity-fill"></div>
     </div>
     <div class="footer-inner">
-      <button class="footer-brand" title="New document" aria-label="New document"><span class="brand-main">notepad</span><span class="brand-suffix">able</span></button>
+      <button class="footer-brand" title="New note" aria-label="New note"><span class="brand-main">notepad</span><span class="brand-suffix">able</span></button>
       <button class="footer-chevron" id="btn-chevron" title="Toggle panel" aria-label="Toggle panel" aria-expanded="false">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
           <polyline points="18 15 12 9 6 15"></polyline>
@@ -155,6 +155,7 @@ function initFooterPanel() {
       <div class="footer-panel-blurb">
         <p class="footer-panel-brand"><span class="brand-main">notepad</span><span class="brand-suffix">able</span></p>
         <p class="footer-panel-desc">A stateless editor that stores everything in the URL. Share a link and the recipient gets your full text. Markdown, mermaid diagrams, optional encryption. No server, no accounts.</p>
+        <p class="footer-panel-credit">Made by <a href="https://github.com/bicrick" target="_blank" rel="noopener noreferrer">Bicrick</a> · <a href="https://bicrick.com" target="_blank" rel="noopener noreferrer">bicrick.com</a></p>
       </div>
     </div>
   `
