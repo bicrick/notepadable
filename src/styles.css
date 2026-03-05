@@ -719,8 +719,33 @@ html[data-theme="light"] .theme-btn.active {
   margin: 4px 0;
 }
 
+.modal-share .share-raw-btn {
+  grid-column: 1 / -1;
+  padding: 8px 16px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 8px;
+  background: transparent;
+  color: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.12s, border-color 0.12s;
+  text-align: center;
+}
+
+.modal-share .share-raw-btn:hover {
+  background: rgba(0, 0, 0, 0.04);
+  border-color: rgba(0, 0, 0, 0.25);
+}
+
+.modal-share .share-raw-btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
 .modal-share .share-downloads {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 8px;
 }
 
@@ -1079,6 +1104,8 @@ html[data-theme="dark"] .modal-share .share-lock-btn.active:hover { background: 
 html[data-theme="dark"] .modal-share .share-divider { background: rgba(255, 255, 255, 0.08); }
 html[data-theme="dark"] .modal-share .share-dl-btn { border-color: rgba(255, 255, 255, 0.15); }
 html[data-theme="dark"] .modal-share .share-dl-btn:hover { background: rgba(255, 255, 255, 0.08); border-color: rgba(255, 255, 255, 0.25); }
+html[data-theme="dark"] .modal-share .share-raw-btn { border-color: rgba(255, 255, 255, 0.15); }
+html[data-theme="dark"] .modal-share .share-raw-btn:hover { background: rgba(255, 255, 255, 0.08); border-color: rgba(255, 255, 255, 0.25); }
 html[data-theme="dark"] .modal-btn-primary { background: #e0e0e0; color: #1a1a1a; }
 html[data-theme="dark"] .modal-btn-primary:hover:not(:disabled) { background: #fff; }
 html[data-theme="dark"] .modal-btn-secondary { background: rgba(255, 255, 255, 0.08); }
@@ -1135,6 +1162,8 @@ html[data-theme="light"] .modal-share .share-lock-btn.active:hover { background:
 html[data-theme="light"] .modal-share .share-divider { background: rgba(0, 0, 0, 0.08); }
 html[data-theme="light"] .modal-share .share-dl-btn { border-color: rgba(0, 0, 0, 0.15); }
 html[data-theme="light"] .modal-share .share-dl-btn:hover { background: rgba(0, 0, 0, 0.04); border-color: rgba(0, 0, 0, 0.25); }
+html[data-theme="light"] .modal-share .share-raw-btn { border-color: rgba(0, 0, 0, 0.15); }
+html[data-theme="light"] .modal-share .share-raw-btn:hover { background: rgba(0, 0, 0, 0.04); border-color: rgba(0, 0, 0, 0.25); }
 html[data-theme="light"] .modal-btn-primary { background: #1a1a1a; color: #fff; }
 html[data-theme="light"] .modal-btn-primary:hover:not(:disabled) { background: #333; }
 html[data-theme="light"] .modal-btn-secondary { background: rgba(0, 0, 0, 0.06); }

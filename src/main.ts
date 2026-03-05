@@ -128,6 +128,16 @@ async function handleEncryptShare(password: string): Promise<void> {
   }
 }
 
+async function handleEncryptRaw(password: string): Promise<string> {
+  const text = editor.getContent()
+  if (!text) return ''
+
+  const { hash, urlLength } = await saveEncryptedToURL(text, password)
+  updateCapacity(urlLength)
+
+  return `${window.location.origin}/raw/${hash}?p=${encodeURIComponent(password)}`
+}
+
 function updateTitle(text: string) {
   const firstLine = text.split('\n').find(l => l.trim())
   if (firstLine) {
@@ -213,6 +223,7 @@ initToolbar({
   onDownloadHTML: downloadHTML,
   onDownloadTXT: downloadTXT,
   onEncryptShare: handleEncryptShare,
+  onEncryptRaw: handleEncryptRaw,
   onTogglePreview: togglePreview,
 })
 

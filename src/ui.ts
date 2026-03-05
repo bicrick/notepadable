@@ -13,16 +13,19 @@ let capacityFill: HTMLElement | null = null
 let capacityLabel: HTMLElement | null = null
 let toastEl: HTMLElement | null = null
 let onEncryptAndCopy: ((password: string) => Promise<void>) | null = null
+let onEncryptAndRaw: ((password: string) => Promise<string>) | null = null
 
 export function initToolbar(callbacks: {
   onNew: () => void
   onDownloadHTML: () => void
   onDownloadTXT: () => void
   onEncryptShare: (password: string) => Promise<void>
+  onEncryptRaw: (password: string) => Promise<string>
   onTogglePreview: () => void
 }) {
   footer = document.getElementById('footer')!
   onEncryptAndCopy = callbacks.onEncryptShare
+  onEncryptAndRaw = callbacks.onEncryptRaw
 
   footer.innerHTML = `
     <div class="capacity-bar">
@@ -193,6 +196,7 @@ function showShareModal(callbacks: { onDownloadHTML: () => void; onDownloadTXT: 
         <div class="share-downloads">
           <button class="share-dl-btn" id="modal-dl-html">Save as HTML</button>
           <button class="share-dl-btn" id="modal-dl-txt">Save as TXT</button>
+          <button class="share-raw-btn" id="modal-raw-btn">Copy Raw Link</button>
         </div>
       </div>
     </div>
@@ -209,6 +213,7 @@ function showShareModal(callbacks: { onDownloadHTML: () => void; onDownloadTXT: 
   const passwordInput = document.getElementById('modal-password') as HTMLInputElement
   const togglePwBtn = document.getElementById('modal-toggle-pw') as HTMLButtonElement
   const actionBtn = document.getElementById('modal-action-btn') as HTMLButtonElement
+  const rawBtn = document.getElementById('modal-raw-btn') as HTMLButtonElement
 
   let encrypted = false
 
@@ -224,12 +229,14 @@ function showShareModal(callbacks: { onDownloadHTML: () => void; onDownloadTXT: 
       passwordArea.classList.add('visible')
       actionBtn.textContent = 'Copy Encrypted Link'
       actionBtn.disabled = !passwordInput.value
+      rawBtn.disabled = !passwordInput.value
       setTimeout(() => passwordInput.focus(), 250)
     } else {
       passwordArea.classList.remove('visible')
       passwordInput.value = ''
       actionBtn.textContent = 'Copy Link'
       actionBtn.disabled = false
+      rawBtn.disabled = false
     }
   }
 
@@ -256,7 +263,10 @@ function showShareModal(callbacks: { onDownloadHTML: () => void; onDownloadTXT: 
   lockToggle.addEventListener('click', () => setEncrypted(!encrypted))
 
   passwordInput.addEventListener('input', () => {
-    if (encrypted) actionBtn.disabled = !passwordInput.value
+    if (encrypted) {
+      actionBtn.disabled = !passwordInput.value
+      rawBtn.disabled = !passwordInput.value
+    }
   })
 
   passwordInput.addEventListener('keydown', (e) => {
@@ -291,6 +301,38 @@ function showShareModal(callbacks: { onDownloadHTML: () => void; onDownloadTXT: 
     } catch {
       actionBtn.textContent = 'Error -- try again'
       actionBtn.disabled = false
+    }
+  })
+
+  rawBtn.addEventListener('click', async () => {
+    if (!encrypted) {
+      const hash = window.location.hash.slice(1)
+      if (!hash) return
+      const rawURL = `${window.location.origin}/raw/${hash}`
+      if (navigator.clipboard) {
+        await navigator.clipboard.writeText(rawURL)
+        close()
+        showToast('Raw link copied')
+      }
+      return
+    }
+
+    const password = passwordInput.value
+    if (!password || !onEncryptAndRaw) return
+
+    rawBtn.disabled = true
+    rawBtn.textContent = 'Encrypting...'
+
+    try {
+      const rawURL = await onEncryptAndRaw(password)
+      if (navigator.clipboard) {
+        await navigator.clipboard.writeText(rawURL)
+      }
+      close()
+      showToast('Raw link copied')
+    } catch {
+      rawBtn.textContent = 'Error — try again'
+      rawBtn.disabled = false
     }
   })
 
