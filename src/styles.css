@@ -220,7 +220,7 @@ body {
 }
 
 .footer-panel.expanded {
-  height: 165px;
+  height: 185px;
 }
 
 .footer-panel-content {
@@ -314,10 +314,12 @@ html[data-theme="light"] .theme-btn.active {
 }
 
 .footer-panel-brand {
-  font: 700 14px/1 system-ui, sans-serif;
+  font-weight: 700;
   letter-spacing: -0.03em;
-  margin: 0;
+  display: inline;
   opacity: 0.8;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .footer-panel-brand .brand-main {
@@ -339,7 +341,7 @@ html[data-theme="light"] .theme-btn.active {
 .footer-panel-credit {
   font: 11px/1.4 system-ui, sans-serif;
   opacity: 0.5;
-  margin: 8px 0 0;
+  margin: 14px 0 6px;
 }
 
 .footer-panel-credit a {

@@ -153,8 +153,7 @@ function initFooterPanel() {
         </div>
       </div>
       <div class="footer-panel-blurb">
-        <p class="footer-panel-brand"><span class="brand-main">notepad</span><span class="brand-suffix">able</span></p>
-        <p class="footer-panel-desc">A stateless editor that stores everything in the URL. Share a link and the recipient gets your full text. Markdown, mermaid diagrams, optional encryption. No server, no accounts.</p>
+        <p class="footer-panel-desc"><span class="footer-panel-brand"><span class="brand-main">notepad</span><span class="brand-suffix">able</span></span> is a stateless editor that stores everything in the URL. Share a link and the recipient gets your full text. Markdown, mermaid diagrams, optional encryption. No server, no accounts.</p>
         <p class="footer-panel-credit">Made by <a href="https://github.com/bicrick" target="_blank" rel="noopener noreferrer">Bicrick</a> · <a href="https://bicrick.com" target="_blank" rel="noopener noreferrer">bicrick.com</a></p>
       </div>
     </div>
