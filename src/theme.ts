@@ -4,7 +4,7 @@ const fontFamily = 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Ro
 
 export const lightTheme = EditorView.theme({
   '&': {
-    backgroundColor: '#ffffff',
+    backgroundColor: '#f5f5f5',
     color: '#1a1a1a',
     fontSize: '17px',
     fontFamily,
@@ -45,7 +45,7 @@ export const lightTheme = EditorView.theme({
 
 export const darkTheme = EditorView.theme({
   '&': {
-    backgroundColor: '#0a0a0a',
+    backgroundColor: '#1a1a1a',
     color: '#e0e0e0',
     fontSize: '17px',
     fontFamily,

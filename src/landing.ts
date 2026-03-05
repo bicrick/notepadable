@@ -47,7 +47,7 @@ function escapeHtml(s: string): string {
 
 function runTypewriter() {
   const textEl = document.getElementById('demo-text')
-  const urlEl = document.getElementById('demo-bar-url')
+  const urlEl = document.getElementById('demo-bar-url') as HTMLAnchorElement | null
   if (!textEl || !urlEl) return
 
   let charCount = 0

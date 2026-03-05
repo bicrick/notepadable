@@ -151,7 +151,7 @@ async function downloadHTML() {
 <title>${escapeHtml(title)}</title>
 <style>
   body { font: 17px/1.6 system-ui, sans-serif; max-width: 720px; margin: 0 auto; padding: 40px 18px; color: #1a1a1a; }
-  @media (prefers-color-scheme: dark) { body { background: #0a0a0a; color: #e0e0e0; } }
+  @media (prefers-color-scheme: dark) { body { background: #1a1a1a; color: #e0e0e0; } }
   pre { background: rgba(0,0,0,0.05); padding: 16px; border-radius: 6px; overflow-x: auto; }
   code { font-family: ui-monospace, monospace; font-size: 0.9em; }
   blockquote { border-left: 3px solid rgba(0,0,0,0.15); padding-left: 16px; margin-left: 0; opacity: 0.85; }
