@@ -1,6 +1,6 @@
 import { createEditor } from './editor'
 import { saveToURL, loadFromURL, debounce, getURLLength } from './url'
-import { initToolbar, updateCapacity, signalTyping, showToolbar } from './ui'
+import { initToolbar, updateCapacity } from './ui'
 import './styles.css'
 
 const editorEl = document.getElementById('editor')!
@@ -18,7 +18,6 @@ function syncToURL() {
 const debouncedSync = debounce(500, syncToURL)
 
 editor.onUpdate(() => {
-  signalTyping()
   debouncedSync()
 })
 
@@ -107,7 +106,6 @@ editor.view.focus()
 
 window.addEventListener('hashchange', () => {
   loadContent()
-  showToolbar()
 })
 
 if ('serviceWorker' in navigator) {
