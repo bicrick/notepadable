@@ -8,6 +8,7 @@ html {
   color-scheme: light dark;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+  zoom: 1.5;
 }
 
 body {
