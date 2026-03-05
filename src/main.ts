@@ -3,7 +3,10 @@ import { saveToURL, saveEncryptedToURL, loadFromURL, debounce, getURLLength, get
 import { initToolbar, updateCapacity, showPasswordPrompt, showToast, setPreviewMode, setPreviewButtonVisible } from './ui'
 import { renderPreview, getRenderedHTML } from './preview'
 import { hasMarkdown } from './markdown-detect'
+import { initTheme, THEME_CHANGE_EVENT } from './theme-mode'
 import './styles.css'
+
+initTheme()
 
 const editorEl = document.getElementById('editor')!
 const previewEl = document.getElementById('preview')!
@@ -220,6 +223,12 @@ if (!isPreviewMode) {
 
 window.addEventListener('hashchange', () => {
   loadContent()
+})
+
+window.addEventListener(THEME_CHANGE_EVENT, () => {
+  if (isPreviewMode) {
+    renderPreview(previewEl, editor.getContent())
+  }
 })
 
 if ('serviceWorker' in navigator) {

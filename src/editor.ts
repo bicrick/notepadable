@@ -5,6 +5,7 @@ import { markdown } from '@codemirror/lang-markdown'
 import { syntaxHighlighting, defaultHighlightStyle } from '@codemirror/language'
 import { searchKeymap } from '@codemirror/search'
 import { getThemeForScheme, markdownHighlightStyle } from './theme'
+import { getTheme, resolveIsDark, THEME_CHANGE_EVENT } from './theme-mode'
 
 export interface EditorInstance {
   view: EditorView
@@ -19,7 +20,7 @@ export function createEditor(
     onSave?: () => void
   } = {}
 ): EditorInstance {
-  const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+  const isDark = resolveIsDark(getTheme())
   let updateCallback: (() => void) | null = null
 
   const themeCompartment = new Compartment()
@@ -59,11 +60,13 @@ export function createEditor(
 
   const view = new EditorView({ state, parent })
 
-  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+  function applyTheme() {
     view.dispatch({
-      effects: themeCompartment.reconfigure(getThemeForScheme(e.matches)),
+      effects: themeCompartment.reconfigure(getThemeForScheme(resolveIsDark(getTheme()))),
     })
-  })
+  }
+
+  window.addEventListener(THEME_CHANGE_EVENT, applyTheme)
 
   return {
     view,

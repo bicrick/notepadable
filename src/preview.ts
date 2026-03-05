@@ -1,4 +1,5 @@
 import { marked, type Tokens } from 'marked'
+import { getTheme, resolveIsDark } from './theme-mode'
 
 marked.setOptions({
   gfm: true,
@@ -28,11 +29,12 @@ function escapeHtml(str: string): string {
 let mermaidMod: { default: { initialize: (opts: Record<string, unknown>) => void; run: (opts: { nodes: NodeListOf<Element> }) => Promise<void> } } | null = null
 
 async function loadMermaid() {
-  if (mermaidMod) return
   try {
-    // @ts-ignore -- CDN dynamic import
-    mermaidMod = await import('https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs')
-    const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+    if (!mermaidMod) {
+      // @ts-ignore -- CDN dynamic import
+      mermaidMod = await import('https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs')
+    }
+    const isDark = resolveIsDark(getTheme())
     mermaidMod!.default.initialize({
       startOnLoad: false,
       theme: isDark ? 'dark' : 'default',
