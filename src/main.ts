@@ -1,6 +1,6 @@
 import { createEditor } from './editor'
-import { saveToURL, loadFromURL, debounce, getURLLength } from './url'
-import { initToolbar, updateCapacity } from './ui'
+import { saveToURL, saveEncryptedToURL, loadFromURL, debounce, getURLLength, getShareableURL } from './url'
+import { initToolbar, updateCapacity, showPasswordPrompt, showToast } from './ui'
 import './styles.css'
 
 const editorEl = document.getElementById('editor')!
@@ -21,13 +21,49 @@ editor.onUpdate(() => {
   debouncedSync()
 })
 
-function loadContent() {
-  const text = loadFromURL()
-  if (text) {
-    editor.setContent(text)
+async function loadContent() {
+  const result = loadFromURL()
+
+  if (!result) {
+    updateCapacity(getURLLength())
+    updateTitle('')
+    return
   }
-  updateCapacity(getURLLength())
-  updateTitle(text)
+
+  if (!result.encrypted) {
+    if (result.text) {
+      editor.setContent(result.text)
+    }
+    updateCapacity(getURLLength())
+    updateTitle(result.text)
+    return
+  }
+
+  showPasswordPrompt(async (password: string) => {
+    try {
+      const text = await result.decrypt(password)
+      editor.setContent(text)
+      updateCapacity(getURLLength())
+      updateTitle(text)
+      editor.view.focus()
+      return true
+    } catch {
+      return false
+    }
+  })
+}
+
+async function handleEncryptShare(password: string): Promise<void> {
+  const text = editor.getContent()
+  if (!text) return
+
+  const { urlLength } = await saveEncryptedToURL(text, password)
+  updateCapacity(urlLength)
+
+  const url = getShareableURL()
+  if (navigator.clipboard) {
+    await navigator.clipboard.writeText(url)
+  }
 }
 
 function updateTitle(text: string) {
@@ -99,6 +135,7 @@ initToolbar({
   onNew: newDocument,
   onDownloadHTML: downloadHTML,
   onDownloadTXT: downloadTXT,
+  onEncryptShare: handleEncryptShare,
 })
 
 loadContent()

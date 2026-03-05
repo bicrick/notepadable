@@ -1,8 +1,11 @@
 import { compressToEncodedURIComponent, decompressFromEncodedURIComponent } from 'lz-string'
 import { DICTIONARY, WORD_TO_INDEX } from './dictionary'
+import { encrypt, decrypt } from './crypto'
 
 const VERSION = 1
 const DICT_BITS = 12
+
+const FLAG_ENCRYPTED = 0x01
 
 // Binary token types
 const TOKEN_WORD = 0    // 1-bit flag (0) + 12-bit dictionary index
@@ -154,23 +157,29 @@ function dictDecode(data: Uint8Array): string {
   return parts.join('')
 }
 
+function toBinaryString(data: Uint8Array): string {
+  let s = ''
+  for (const b of data) s += String.fromCharCode(b)
+  return s
+}
+
+function fromBinaryString(s: string): Uint8Array {
+  const arr = new Uint8Array(s.length)
+  for (let i = 0; i < s.length; i++) arr[i] = s.charCodeAt(i)
+  return arr
+}
+
 export function compress(text: string): string {
   if (!text) return ''
 
   const dictEncoded = dictEncode(text)
 
-  // Prepend version byte
-  const payload = new Uint8Array(1 + dictEncoded.length)
+  const payload = new Uint8Array(2 + dictEncoded.length)
   payload[0] = VERSION
-  payload.set(dictEncoded, 1)
+  payload[1] = 0 // flags: plain
+  payload.set(dictEncoded, 2)
 
-  // Convert to string for lz-string (binary string approach)
-  let binaryStr = ''
-  for (const b of payload) {
-    binaryStr += String.fromCharCode(b)
-  }
-
-  return compressToEncodedURIComponent(binaryStr)
+  return compressToEncodedURIComponent(toBinaryString(payload))
 }
 
 export function decompress(hash: string): string {
@@ -179,15 +188,67 @@ export function decompress(hash: string): string {
   const binaryStr = decompressFromEncodedURIComponent(hash)
   if (!binaryStr) return ''
 
-  const payload = new Uint8Array(binaryStr.length)
-  for (let i = 0; i < binaryStr.length; i++) {
-    payload[i] = binaryStr.charCodeAt(i)
-  }
+  const payload = fromBinaryString(binaryStr)
 
   const version = payload[0]
   if (version !== VERSION) {
     throw new Error(`Unknown compression version: ${version}`)
   }
 
-  return dictDecode(payload.slice(1))
+  // Support both old format (no flags byte) and new format
+  const flags = payload[1]
+  const data = payload.slice(2)
+
+  if (flags & FLAG_ENCRYPTED) {
+    throw new Error('Document is encrypted')
+  }
+
+  return dictDecode(data)
+}
+
+export async function compressEncrypted(text: string, password: string): Promise<string> {
+  if (!text) return ''
+
+  const dictEncoded = dictEncode(text)
+  const encrypted = await encrypt(dictEncoded, password)
+
+  const payload = new Uint8Array(2 + encrypted.length)
+  payload[0] = VERSION
+  payload[1] = FLAG_ENCRYPTED
+  payload.set(encrypted, 2)
+
+  return compressToEncodedURIComponent(toBinaryString(payload))
+}
+
+export type DecompressResult =
+  | { encrypted: false; text: string }
+  | { encrypted: true; decrypt: (password: string) => Promise<string> }
+
+export function decompressAuto(hash: string): DecompressResult {
+  if (!hash) return { encrypted: false, text: '' }
+
+  const binaryStr = decompressFromEncodedURIComponent(hash)
+  if (!binaryStr) return { encrypted: false, text: '' }
+
+  const payload = fromBinaryString(binaryStr)
+
+  const version = payload[0]
+  if (version !== VERSION) {
+    throw new Error(`Unknown compression version: ${version}`)
+  }
+
+  const flags = payload[1]
+  const data = payload.slice(2)
+
+  if (flags & FLAG_ENCRYPTED) {
+    return {
+      encrypted: true,
+      async decrypt(password: string): Promise<string> {
+        const decrypted = await decrypt(data, password)
+        return dictDecode(decrypted)
+      },
+    }
+  }
+
+  return { encrypted: false, text: dictDecode(data) }
 }

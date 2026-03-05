@@ -23,6 +23,20 @@ The app uses a hybrid compression pipeline:
 
 The result: roughly 600-1,200 words fit in a 2,000-character URL (the universal safe limit for sharing across platforms).
 
+## Encryption
+
+Documents can be shared with a password. Click the share button and select the **Encrypted** tab to set a password before copying the link. The recipient is prompted to enter the password when they open the link.
+
+The encryption is entirely client-side using the browser's built-in [Web Crypto API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Crypto_API):
+
+- **AES-256-GCM** -- authenticated encryption. A wrong password doesn't produce garbled output; the decryption simply fails, so there's no way to partially read the content.
+- **PBKDF2** -- the password is never used directly as a key. It's run through 100,000 iterations of PBKDF2 (SHA-256) with a random salt to derive the actual AES key. This makes brute-force attacks ~10ms per guess on modern hardware.
+- **Random salt + IV** -- a new 16-byte salt and 12-byte initialization vector are generated for every encryption, so the same text encrypted with the same password produces a different ciphertext each time.
+
+The encrypted payload is stored in the URL hash, same as unencrypted documents. The server never sees the password or the plaintext.
+
+> Note: without a backend there is no rate limiting, so the strength of the encryption depends on the strength of the password. A short or common password is vulnerable to offline brute-force attacks.
+
 ## Development
 
 ```bash
