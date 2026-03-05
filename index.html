@@ -4,19 +4,72 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
-  <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#0a0a0a" media="(prefers-color-scheme: dark)">
+  <meta name="description" content="A minimalist text editor that encodes your entire document into the URL. No server, no database, no accounts.">
   <link rel="manifest" href="/manifest.json">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='16' fill='%23171717'/><text x='50' y='68' font-size='52' font-family='system-ui' font-weight='700' fill='white' text-anchor='middle'>T</text></svg>">
-  <title>notepadable</title>
+  <title>notepadable — text stored in the URL</title>
 </head>
 <body>
-  <div id="editor"></div>
-  <div id="preview" style="display:none"></div>
-  <div id="footer-container">
-    <div id="footer"></div>
-    <div id="footer-panel" class="footer-panel"></div>
-  </div>
-  <div id="toast"></div>
-  <script type="module" src="/src/main.ts"></script>
+  <nav class="nav">
+    <a href="/" class="nav-brand">
+      <span class="nav-logo">T</span>
+      <span class="nav-name"><strong>notepad</strong><span class="nav-name-muted">able</span></span>
+    </a>
+    <a href="/app" class="btn btn-outline">Open editor</a>
+  </nav>
+
+  <main>
+    <section class="hero-row">
+      <div class="hero">
+        <h1 class="hero-headline">Your text,<br>encoded in the URL.</h1>
+        <p class="hero-sub">A minimalist text editor with no server, no database, and no accounts. Everything you type is compressed and stored directly in the URL hash &mdash; share a link, share your document.</p>
+        <div class="hero-actions">
+          <a href="/app" class="btn btn-primary">Open editor</a>
+          <a href="https://github.com/bicrick" target="_blank" rel="noopener" class="btn btn-ghost">GitHub</a>
+        </div>
+      </div>
+
+      <div class="demo-section">
+        <div class="demo-window">
+          <div class="demo-titlebar">
+            <span class="demo-dot"></span>
+            <span class="demo-dot"></span>
+            <span class="demo-dot"></span>
+            <span class="demo-titlebar-label">notepadable</span>
+          </div>
+          <div class="demo-body">
+            <div class="demo-editor">
+              <div class="demo-line"><span class="demo-heading"># Meeting Notes</span></div>
+              <div class="demo-line demo-blank"></div>
+              <div class="demo-line">Discussed quarterly roadmap with the team.</div>
+              <div class="demo-line">Action items:</div>
+              <div class="demo-line demo-blank"></div>
+              <div class="demo-line"><span class="demo-list">- Finalize API design by Friday</span></div>
+              <div class="demo-line"><span class="demo-list">- Review pull requests from last sprint</span></div>
+              <div class="demo-line"><span class="demo-list">- Schedule follow-up with design</span></div>
+              <div class="demo-line demo-blank"></div>
+              <div class="demo-line"><span class="demo-italic">Next meeting: Monday 10am</span></div>
+            </div>
+            <div class="demo-url-bar">
+              <span class="demo-url-label">URL</span>
+              <span class="demo-url-value">notepadable.com/<wbr>#H4sIAAAAA...Xm9Q8mAAA</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <span>Made by <a href="https://github.com/bicrick" target="_blank" rel="noopener">Bicrick</a></span>
+    <span class="footer-sep">&middot;</span>
+    <a href="https://github.com/bicrick" target="_blank" rel="noopener">GitHub</a>
+    <span class="footer-sep">&middot;</span>
+    <a href="/app">Open editor</a>
+  </footer>
+
+  <script type="module" src="/src/landing.ts"></script>
 </body>
 </html>
