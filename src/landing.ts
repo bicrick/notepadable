@@ -7,43 +7,34 @@ initTheme()
 marked.setOptions({ gfm: true, breaks: true })
 
 // Raw markdown to type out, then render
-const DEMO_MARKDOWN = `# The door was open.
+const DEMO_MARKDOWN = `# No server. No database.
 
-She walked in. **Nothing** there.
+Just **text** in the URL.
 
-Except a note. It said: *Hello*.`
+*Share a link, share the doc.*`
 
-// Hash progression: grows with character count (simulates compression)
-const HASH_STEPS = [
-  '#',
-  '#H4s',
-  '#H4sIA',
-  '#H4sIAAAA',
-  '#H4sIAAAAA',
-  '#H4sIAAAAAC',
-  '#H4sIAAAAACm',
-  '#H4sIAAAAACmK',
-  '#H4sIAAAAACmKs',
-  '#H4sIAAAAACmKs8',
-  '#H4sIAAAAACmKs8X',
-  '#H4sIAAAAACmKs8Xm',
-  '#H4sIAAAAACmKs8Xm9',
-  '#H4sIAAAAACmKs8Xm9Q',
-  '#H4sIAAAAACmKs8Xm9Q8',
-  '#H4sIAAAAACmKs8Xm9Q8m',
-  '#H4sIAAAAACmKs8Xm9Q8mAA',
-  '#H4sIAAAAACmKs8Xm9Q8mAAA',
-]
+// Real hash for the demo content (from actual compression)
+const REAL_HASH =
+  'IAAAgQCQiBACID6BAsD4AMqBHAICA0AAcAkSA-2AOkCg1swATQGCwAqrAqABMCYAinxDAABsRAgAAXACrrAMkACAKEBBgIIBRAApI5UkACQUUTAEMQAEpLipASgBxOADqsgA'
+
+const HASH_SUFFIX_LEN = 15
+const PREFIX = 'notepadable.com/app#'
 
 const CHAR_DELAY_MS = 35
 const PAUSE_BEFORE_RENDER_MS = 600
 
 function getHashForCharCount(count: number): string {
-  const idx = Math.min(
-    Math.floor((count / DEMO_MARKDOWN.length) * HASH_STEPS.length),
-    HASH_STEPS.length - 1
-  )
-  return HASH_STEPS[idx]
+  const progress = Math.min(count / DEMO_MARKDOWN.length, 1)
+  const len = Math.max(1, Math.floor(progress * REAL_HASH.length))
+  return '#' + REAL_HASH.slice(0, len)
+}
+
+function formatUrlDisplay(hash: string): string {
+  const hashSeg = hash.startsWith('#') ? hash.slice(1) : hash
+  if (hashSeg.length <= HASH_SUFFIX_LEN) {
+    return PREFIX + hashSeg
+  }
+  return PREFIX + '...' + hashSeg.slice(-HASH_SUFFIX_LEN)
 }
 
 function escapeHtml(s: string): string {
@@ -64,7 +55,9 @@ function runTypewriter() {
   function updateUI() {
     const display = rawText.split('\n').map((line) => escapeHtml(line)).join('<br>')
     textEl!.innerHTML = display + CURSOR
-    urlEl!.textContent = `notepadable.com/app${getHashForCharCount(charCount)}`
+    const hash = getHashForCharCount(charCount)
+    urlEl!.href = '/app' + hash
+    urlEl!.textContent = formatUrlDisplay(hash)
   }
 
   function typeNext(): Promise<void> {
@@ -90,7 +83,10 @@ function runTypewriter() {
     const rendered = await marked.parse(rawText)
     textEl!.classList.add('demo-rendered')
     textEl!.innerHTML = rendered as string
-    urlEl!.textContent = `notepadable.com/app${getHashForCharCount(DEMO_MARKDOWN.length)}`
+    const hash = getHashForCharCount(DEMO_MARKDOWN.length)
+    urlEl!.href = '/app' + hash
+    urlEl!.textContent = formatUrlDisplay(hash)
+    urlEl!.classList.remove('demo-bar-url--disabled')
   }
 
   run()

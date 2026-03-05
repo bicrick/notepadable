@@ -227,13 +227,6 @@ main {
   margin-bottom: 20px;
 }
 
-.hero-sub {
-  font-size: 0.95rem;
-  color: var(--text-muted);
-  margin-bottom: 32px;
-  line-height: 1.7;
-}
-
 .hero-actions {
   display: flex;
   align-items: center;
@@ -422,6 +415,16 @@ html[data-theme="light"] .demo-cursor {
   text-overflow: ellipsis;
   white-space: nowrap;
   text-align: right;
+  text-decoration: none;
+}
+
+.demo-bar-url:hover {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.demo-bar-url--disabled {
+  pointer-events: none;
+  cursor: default;
 }
 
 /* Dark page: demo is light, so bar is light */
@@ -435,6 +438,9 @@ html[data-theme="light"] .demo-cursor {
   }
   .demo-bar-url {
     color: rgba(0, 0, 0, 0.5);
+  }
+  .demo-bar-url:hover {
+    color: rgba(0, 0, 0, 0.8);
   }
 }
 
@@ -451,6 +457,10 @@ html[data-theme="dark"] .demo-bar-url {
   color: rgba(0, 0, 0, 0.5);
 }
 
+html[data-theme="dark"] .demo-bar-url:hover {
+  color: rgba(0, 0, 0, 0.8);
+}
+
 html[data-theme="light"] .demo-bar {
   background: rgba(20, 20, 20, 0.85);
   border-top-color: rgba(255, 255, 255, 0.1);
@@ -462,6 +472,10 @@ html[data-theme="light"] .demo-bar-brand {
 
 html[data-theme="light"] .demo-bar-url {
   color: rgba(255, 255, 255, 0.5);
+}
+
+html[data-theme="light"] .demo-bar-url:hover {
+  color: rgba(255, 255, 255, 0.8);
 }
 
 
