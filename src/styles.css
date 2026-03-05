@@ -596,8 +596,8 @@ html[data-theme="light"] .theme-btn.active {
 
 .modal {
   background: #fff;
-  border-radius: 14px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
   width: 90%;
   max-width: 360px;
   overflow: hidden;
@@ -606,7 +606,7 @@ html[data-theme="light"] .theme-btn.active {
 @media (prefers-color-scheme: dark) {
   .modal {
     background: #1c1c1c;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
   }
 }
 
@@ -642,6 +642,103 @@ html[data-theme="light"] .theme-btn.active {
   display: flex;
   flex-direction: column;
   gap: 12px;
+}
+
+/* Share modal */
+.modal-share {
+  border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.modal-share .share-primary {
+  display: flex;
+  align-items: stretch;
+  gap: 8px;
+}
+
+.modal-share .share-copy-btn {
+  flex: 1;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  background: #1a1a1a;
+  color: #fff;
+  font: 500 14px/1.4 system-ui, sans-serif;
+  cursor: pointer;
+  transition: background-color 0.15s;
+  text-align: center;
+}
+
+.modal-share .share-copy-btn:hover {
+  background: #333;
+}
+
+.modal-share .share-copy-btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.modal-share .share-lock-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  border: none;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.06);
+  color: inherit;
+  opacity: 0.7;
+  cursor: pointer;
+  transition: background-color 0.15s, opacity 0.15s;
+  flex-shrink: 0;
+  padding: 0;
+}
+
+.modal-share .share-lock-btn:hover {
+  background: rgba(0, 0, 0, 0.1);
+  opacity: 1;
+}
+
+.modal-share .share-lock-btn.active {
+  background: #1a1a1a;
+  color: #fff;
+  opacity: 1;
+}
+
+.modal-share .share-lock-btn.active:hover {
+  background: #333;
+}
+
+.modal-share .share-lock-btn.active svg {
+  transform: scale(1.05);
+  transition: transform 0.2s ease;
+}
+
+.modal-share .share-divider {
+  height: 1px;
+  background: rgba(0, 0, 0, 0.08);
+  margin: 4px 0;
+}
+
+.modal-share .share-downloads {
+  display: flex;
+  gap: 8px;
+}
+
+.modal-share .share-dl-btn {
+  flex: 1;
+  padding: 8px 12px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 6px;
+  background: transparent;
+  color: inherit;
+  font: 400 13px/1.4 system-ui, sans-serif;
+  cursor: pointer;
+  transition: background-color 0.15s, border-color 0.15s;
+}
+
+.modal-share .share-dl-btn:hover {
+  background: rgba(0, 0, 0, 0.04);
+  border-color: rgba(0, 0, 0, 0.25);
 }
 
 .modal-description {
@@ -972,6 +1069,16 @@ html[data-theme="dark"] .capacity-bar { background: rgba(255, 255, 255, 0.06); }
 html[data-theme="dark"] .capacity-label { color: #666; }
 
 html[data-theme="dark"] .modal { background: #1c1c1c; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5); }
+html[data-theme="dark"] .modal-share { border-color: rgba(255, 255, 255, 0.08); }
+html[data-theme="dark"] .modal-share .share-copy-btn { background: #e0e0e0; color: #1a1a1a; }
+html[data-theme="dark"] .modal-share .share-copy-btn:hover { background: #fff; }
+html[data-theme="dark"] .modal-share .share-lock-btn { background: rgba(255, 255, 255, 0.08); }
+html[data-theme="dark"] .modal-share .share-lock-btn:hover { background: rgba(255, 255, 255, 0.12); }
+html[data-theme="dark"] .modal-share .share-lock-btn.active { background: #e0e0e0; color: #1a1a1a; }
+html[data-theme="dark"] .modal-share .share-lock-btn.active:hover { background: #fff; }
+html[data-theme="dark"] .modal-share .share-divider { background: rgba(255, 255, 255, 0.08); }
+html[data-theme="dark"] .modal-share .share-dl-btn { border-color: rgba(255, 255, 255, 0.15); }
+html[data-theme="dark"] .modal-share .share-dl-btn:hover { background: rgba(255, 255, 255, 0.08); border-color: rgba(255, 255, 255, 0.25); }
 html[data-theme="dark"] .modal-btn-primary { background: #e0e0e0; color: #1a1a1a; }
 html[data-theme="dark"] .modal-btn-primary:hover:not(:disabled) { background: #fff; }
 html[data-theme="dark"] .modal-btn-secondary { background: rgba(255, 255, 255, 0.08); }
@@ -1018,6 +1125,16 @@ html[data-theme="light"] .capacity-bar { background: rgba(0, 0, 0, 0.06); }
 html[data-theme="light"] .capacity-label { color: #999; }
 
 html[data-theme="light"] .modal { background: #fff; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2); }
+html[data-theme="light"] .modal-share { border-color: rgba(0, 0, 0, 0.08); }
+html[data-theme="light"] .modal-share .share-copy-btn { background: #1a1a1a; color: #fff; }
+html[data-theme="light"] .modal-share .share-copy-btn:hover { background: #333; }
+html[data-theme="light"] .modal-share .share-lock-btn { background: rgba(0, 0, 0, 0.06); }
+html[data-theme="light"] .modal-share .share-lock-btn:hover { background: rgba(0, 0, 0, 0.1); }
+html[data-theme="light"] .modal-share .share-lock-btn.active { background: #1a1a1a; color: #fff; }
+html[data-theme="light"] .modal-share .share-lock-btn.active:hover { background: #333; }
+html[data-theme="light"] .modal-share .share-divider { background: rgba(0, 0, 0, 0.08); }
+html[data-theme="light"] .modal-share .share-dl-btn { border-color: rgba(0, 0, 0, 0.15); }
+html[data-theme="light"] .modal-share .share-dl-btn:hover { background: rgba(0, 0, 0, 0.04); border-color: rgba(0, 0, 0, 0.25); }
 html[data-theme="light"] .modal-btn-primary { background: #1a1a1a; color: #fff; }
 html[data-theme="light"] .modal-btn-primary:hover:not(:disabled) { background: #333; }
 html[data-theme="light"] .modal-btn-secondary { background: rgba(0, 0, 0, 0.06); }

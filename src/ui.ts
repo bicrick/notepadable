@@ -12,8 +12,6 @@ let footerExpanded = localStorage.getItem(PANEL_STORAGE_KEY) === 'true'
 let capacityFill: HTMLElement | null = null
 let capacityLabel: HTMLElement | null = null
 let toastEl: HTMLElement | null = null
-let downloadDropdown: HTMLElement | null = null
-
 let onEncryptAndCopy: ((password: string) => Promise<void>) | null = null
 
 export function initToolbar(callbacks: {
@@ -56,26 +54,12 @@ export function initToolbar(callbacks: {
             <path d="M9 6l3 -3l3 3"/>
           </svg>
         </button>
-        <div class="footer-dropdown-wrapper">
-          <button class="footer-btn" id="btn-download" title="Download" aria-label="Download">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M12 5v14"/>
-              <path d="M18 13l-6 6-6-6"/>
-              <path d="M5 20h14"/>
-            </svg>
-          </button>
-          <div class="footer-dropdown" id="download-dropdown">
-            <button class="dropdown-item" id="dl-html">Save as HTML</button>
-            <button class="dropdown-item" id="dl-txt">Save as TXT</button>
-          </div>
-        </div>
       </div>
     </div>
   `
 
   capacityFill = document.getElementById('capacity-fill')!
   capacityLabel = document.getElementById('capacity-label')!
-  downloadDropdown = document.getElementById('download-dropdown')!
   footerPanel = document.getElementById('footer-panel')!
 
   initFooterPanel()
@@ -92,46 +76,15 @@ export function initToolbar(callbacks: {
   const brandBtn = footer.querySelector('.footer-brand') as HTMLButtonElement
   brandBtn.addEventListener('click', () => {
     callbacks.onNew()
-    hideDropdown()
   })
 
   document.getElementById('btn-preview')!.addEventListener('click', () => {
-    hideDropdown()
     callbacks.onTogglePreview()
   })
 
   document.getElementById('btn-share')!.addEventListener('click', () => {
-    hideDropdown()
-    showShareModal()
+    showShareModal(callbacks)
   })
-
-  document.getElementById('btn-download')!.addEventListener('click', (e) => {
-    e.stopPropagation()
-    downloadDropdown!.classList.toggle('visible')
-  })
-
-  document.getElementById('dl-html')!.addEventListener('click', () => {
-    callbacks.onDownloadHTML()
-    hideDropdown()
-    showToast('Downloaded')
-  })
-
-  document.getElementById('dl-txt')!.addEventListener('click', () => {
-    callbacks.onDownloadTXT()
-    hideDropdown()
-    showToast('Downloaded')
-  })
-
-  document.addEventListener('click', (e) => {
-    const target = e.target as HTMLElement
-    if (!target.closest('.footer-dropdown-wrapper')) {
-      hideDropdown()
-    }
-  })
-}
-
-function hideDropdown() {
-  downloadDropdown?.classList.remove('visible')
 }
 
 function initFooterPanel() {
@@ -196,7 +149,7 @@ function applyPanelState() {
 
 // --- Share Modal ---
 
-function showShareModal() {
+function showShareModal(callbacks: { onDownloadHTML: () => void; onDownloadTXT: () => void }) {
   const existing = document.getElementById('modal-overlay')
   if (existing) existing.remove()
 
@@ -204,12 +157,25 @@ function showShareModal() {
   overlay.id = 'modal-overlay'
   overlay.className = 'modal-overlay'
   overlay.innerHTML = `
-    <div class="modal">
+    <div class="modal modal-share">
       <div class="modal-header">
         <span class="modal-title">Share</span>
         <button class="modal-close" aria-label="Close">&times;</button>
       </div>
       <div class="modal-body">
+        <div class="share-primary">
+          <button class="share-copy-btn" id="modal-action-btn">Copy Link</button>
+          <button class="share-lock-btn" id="modal-lock-toggle" aria-label="Toggle encryption" aria-pressed="false" title="Encrypt link">
+            <svg class="lock-open" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+              <path d="M7 11V7a5 5 0 0 1 9.9-1"></path>
+            </svg>
+            <svg class="lock-closed" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+            </svg>
+          </button>
+        </div>
         <div class="modal-password-area" id="modal-password-area">
           <div class="modal-password-inner">
             <div class="modal-input-row">
@@ -223,19 +189,10 @@ function showShareModal() {
             </div>
           </div>
         </div>
-        <div class="split-btn">
-          <button class="split-btn-main" id="modal-action-btn">Copy Link</button>
-          <div class="split-btn-divider"></div>
-          <button class="split-btn-lock" id="modal-lock-toggle" aria-label="Toggle encryption" aria-pressed="false" title="Encrypt link">
-            <svg class="lock-open" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-              <path d="M7 11V7a5 5 0 0 1 9.9-1"></path>
-            </svg>
-            <svg class="lock-closed" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none">
-              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-              <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-            </svg>
-          </button>
+        <div class="share-divider"></div>
+        <div class="share-downloads">
+          <button class="share-dl-btn" id="modal-dl-html">Save as HTML</button>
+          <button class="share-dl-btn" id="modal-dl-txt">Save as TXT</button>
         </div>
       </div>
     </div>
@@ -335,6 +292,18 @@ function showShareModal() {
       actionBtn.textContent = 'Error -- try again'
       actionBtn.disabled = false
     }
+  })
+
+  document.getElementById('modal-dl-html')!.addEventListener('click', () => {
+    callbacks.onDownloadHTML()
+    close()
+    showToast('Downloaded')
+  })
+
+  document.getElementById('modal-dl-txt')!.addEventListener('click', () => {
+    callbacks.onDownloadTXT()
+    close()
+    showToast('Downloaded')
   })
 }
 

@@ -11,11 +11,13 @@ const DEMO_MARKDOWN = `# No server. No database.
 
 Just **text** in the URL.
 
-*Share a link, share the doc.*`
+*Share a link, share the doc.*
+
+**Markdown**, *Mermaid*, and password protection when you need it.`
 
 // Real hash for the demo content (from actual compression)
 const REAL_HASH =
-  'IAAAgQCQiBACID6BAsD4AMqBHAICA0AAcAkSA-2AOkCg1swATQGCwAqrAqABMCYAinxDAABsRAgAAXACrrAMkACAKEBBgIIBRAApI5UkACQUUTAEMQAEpLipASgBxOADqsgA'
+  'IAAAgQiACQAiB9AgGB8AGRAjgEBAaAAOASRAf7AHSBQKmYAJoDAYAVFgVAAmBMARV5DAABkRAgAAbACrLAMkACAKEBBgIIBRAAqJZkkACRkEDAEMQAEuJjJASgBxAGAA6LACiuWAVQAQAWRMATgDWACYA9gDuAHYAQQCp7ABoAAjsqgDLAJpOANkAGgBamfIApuoAISCIkgCQAGTIAJwAGDUgyVYAcJKIAFvIIAAfEAAOmkA'
 
 const HASH_SUFFIX_LEN = 15
 const PREFIX = 'notepadable.com/app#'
