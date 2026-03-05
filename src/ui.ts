@@ -24,7 +24,7 @@ export function initToolbar(callbacks: {
       <div class="capacity-fill" id="capacity-fill"></div>
     </div>
     <div class="footer-inner">
-      <button class="footer-brand" title="New document" aria-label="New document">Text Area</button>
+      <button class="footer-brand" title="New document" aria-label="New document">Notepad</button>
       <div class="footer-actions">
         <span class="capacity-label" id="capacity-label"></span>
         <button class="footer-btn" id="btn-share" title="Share" aria-label="Share">

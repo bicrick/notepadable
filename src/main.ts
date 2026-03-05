@@ -70,9 +70,9 @@ function updateTitle(text: string) {
   const firstLine = text.split('\n').find(l => l.trim())
   if (firstLine) {
     const cleaned = firstLine.replace(/^#+\s*/, '').trim()
-    document.title = cleaned || 'Text Area'
+    document.title = cleaned || 'Notepad'
   } else {
-    document.title = 'Text Area'
+    document.title = 'Notepad'
   }
 }
 
@@ -127,7 +127,7 @@ function newDocument() {
   history.replaceState(null, '', window.location.pathname)
   try { localStorage.removeItem('text-area-hash') } catch {}
   updateCapacity(window.location.href.length)
-  document.title = 'Text Area'
+  document.title = 'Notepad'
   editor.view.focus()
 }
 
