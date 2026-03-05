@@ -1,0 +1,389 @@
+/* ── Page-level column layout ──────────────────────── */
+/* Scoped to the docs page so the body can push the footer to the bottom */
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+}
+
+.docs-layout {
+  flex: 1;
+  display: flex;
+  align-items: flex-start;
+  max-width: 1100px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 40px;
+  gap: 64px;
+}
+
+/* ── Sidebar ───────────────────────────────────────── */
+.docs-sidebar {
+  flex: 0 0 200px;
+  position: sticky;
+  top: calc(72px + 40px);
+  padding: 40px 0;
+  max-height: calc(100dvh - 72px - 80px);
+  overflow-y: auto;
+}
+
+.docs-toc-title {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  margin-bottom: 12px;
+}
+
+.docs-toc-list,
+.docs-toc-sub {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.docs-toc-sub {
+  margin-left: 12px;
+  margin-top: 2px;
+}
+
+.docs-toc-list > li {
+  margin-bottom: 2px;
+}
+
+.docs-toc-sub > li {
+  margin-bottom: 1px;
+}
+
+.docs-toc-link {
+  display: block;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  text-decoration: none;
+  transition: color 0.12s, background 0.12s;
+  line-height: 1.4;
+}
+
+.docs-toc-link:hover {
+  color: var(--text);
+  background: var(--bg-subtle);
+}
+
+.docs-toc-link--active {
+  color: var(--text);
+  font-weight: 500;
+  background: var(--bg-subtle);
+}
+
+/* ── Main content ──────────────────────────────────── */
+.docs-main {
+  flex: 1 1 0;
+  min-width: 0;
+  padding: 56px 0 96px;
+}
+
+/* ── Page header ───────────────────────────────────── */
+.docs-eyebrow {
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  margin-bottom: 8px;
+}
+
+.docs-title {
+  font-size: clamp(1.8rem, 3vw, 2.4rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  color: var(--text);
+  margin-bottom: 12px;
+}
+
+.docs-subtitle {
+  font-size: 1rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+  max-width: 520px;
+  margin-bottom: 56px;
+  padding-bottom: 40px;
+  border-bottom: 1px solid var(--border);
+}
+
+/* ── Sections ──────────────────────────────────────── */
+.docs-section {
+  margin-bottom: 64px;
+  padding-bottom: 64px;
+  border-bottom: 1px solid var(--border);
+}
+
+.docs-section:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.docs-section h2 {
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  margin-bottom: 16px;
+  scroll-margin-top: calc(72px + 24px);
+}
+
+.docs-section h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-top: 36px;
+  margin-bottom: 12px;
+  scroll-margin-top: calc(72px + 24px);
+}
+
+.docs-section p {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  line-height: 1.75;
+  margin-bottom: 16px;
+  max-width: 640px;
+}
+
+.docs-section p:last-child {
+  margin-bottom: 0;
+}
+
+.docs-section a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.docs-section a:hover {
+  text-decoration: underline;
+}
+
+.docs-section strong {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.docs-section em {
+  font-style: italic;
+}
+
+.docs-section code {
+  font-family: ui-monospace, 'Cascadia Code', monospace;
+  font-size: 0.88em;
+  color: var(--text);
+  background: var(--bg-subtle);
+  padding: 2px 6px;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+}
+
+/* ── Lists ─────────────────────────────────────────── */
+.docs-ul,
+.docs-ol {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  line-height: 1.75;
+  max-width: 640px;
+  padding-left: 20px;
+  margin-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.docs-ul {
+  list-style: disc;
+}
+
+.docs-ol {
+  list-style: decimal;
+}
+
+.docs-ul li::marker,
+.docs-ol li::marker {
+  color: var(--text-faint);
+}
+
+/* ── Use-case card grid ────────────────────────────── */
+.docs-card-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+  margin-top: 20px;
+}
+
+.docs-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.docs-card-title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.docs-card p {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+  max-width: none;
+  margin: 0;
+}
+
+.docs-card a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.docs-card a:hover {
+  text-decoration: underline;
+}
+
+.docs-card code {
+  font-family: ui-monospace, 'Cascadia Code', monospace;
+  font-size: 0.88em;
+  color: var(--text);
+  background: var(--bg-subtle);
+  padding: 1px 5px;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+}
+
+/* ── Code blocks ───────────────────────────────────── */
+.docs-code-block {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  margin-bottom: 12px;
+  max-width: 640px;
+}
+
+.docs-code-block:last-child {
+  margin-bottom: 0;
+}
+
+.docs-code-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  padding: 8px 16px 0;
+}
+
+.docs-code-block pre {
+  margin: 0;
+  padding: 10px 16px 14px;
+  overflow-x: auto;
+}
+
+.docs-code-block code {
+  font-family: ui-monospace, 'Cascadia Code', monospace;
+  font-size: 0.875rem;
+  color: var(--text);
+  line-height: 1.6;
+  background: none;
+  border: none;
+  padding: 0;
+}
+
+/* ── Callouts ──────────────────────────────────────── */
+.docs-callout {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--text-faint);
+  border-radius: var(--radius-sm);
+  padding: 12px 16px;
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+  margin-top: 16px;
+  max-width: 640px;
+}
+
+.docs-callout--warn {
+  border-left-color: #d97706;
+}
+
+/* ── Brand name helper ─────────────────────────────── */
+.brand-able {
+  font-weight: 400;
+  opacity: 0.45;
+}
+
+/* ── Nav active state ──────────────────────────────── */
+.nav-active {
+  color: var(--text);
+  background: var(--bg-subtle);
+}
+
+/* ── Responsive ────────────────────────────────────── */
+@media (max-width: 860px) {
+  .docs-layout {
+    flex-direction: column;
+    gap: 0;
+    padding: 0 24px;
+  }
+
+  .docs-sidebar {
+    position: static;
+    flex: none;
+    width: 100%;
+    padding: 24px 0 0;
+    max-height: none;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .docs-toc-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .docs-toc-sub {
+    display: none;
+  }
+
+  .docs-toc-list > li {
+    margin-bottom: 0;
+  }
+
+  .docs-main {
+    padding: 40px 0 64px;
+  }
+
+  .docs-subtitle {
+    margin-bottom: 40px;
+    padding-bottom: 32px;
+  }
+}
+
+@media (max-width: 600px) {
+  .docs-layout {
+    padding: 0 16px;
+  }
+
+  .docs-card-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .docs-section {
+    margin-bottom: 48px;
+    padding-bottom: 48px;
+  }
+}

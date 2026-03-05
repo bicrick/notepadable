@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f5f5" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#1a1a1a" media="(prefers-color-scheme: dark)">
+  <meta name="description" content="How notepadable works — compression, the /raw API, encryption, and more.">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='16' fill='%23171717'/><text x='50' y='68' font-size='52' font-family='system-ui' font-weight='700' fill='white' text-anchor='middle'>T</text></svg>">
+  <title>Docs — notepadable</title>
+</head>
+<body>
+  <nav class="nav">
+    <a href="/" class="nav-brand">
+      <span class="nav-name"><strong>notepad</strong><span class="nav-name-muted">able</span></span>
+    </a>
+    <div class="nav-actions">
+      <a href="/docs" class="btn btn-ghost nav-active">Docs</a>
+      <a href="https://github.com/bicrick/notepadable" target="_blank" rel="noopener" class="btn btn-ghost">GitHub</a>
+      <a href="/app" class="btn btn-outline">Open editor</a>
+    </div>
+  </nav>
+
+  <div class="docs-layout">
+    <aside class="docs-sidebar">
+      <nav class="docs-toc" aria-label="Table of contents">
+        <div class="docs-toc-title">On this page</div>
+        <ul class="docs-toc-list">
+          <li><a href="#use-cases" class="docs-toc-link">What it's good for</a></li>
+          <li><a href="#how-it-works" class="docs-toc-link">How it works</a>
+            <ul class="docs-toc-sub">
+              <li><a href="#compression" class="docs-toc-link">Compression pipeline</a></li>
+              <li><a href="#url-storage" class="docs-toc-link">URL storage</a></li>
+              <li><a href="#limits" class="docs-toc-link">Limits</a></li>
+            </ul>
+          </li>
+          <li><a href="#raw-api" class="docs-toc-link">The /raw API</a>
+            <ul class="docs-toc-sub">
+              <li><a href="#raw-plain" class="docs-toc-link">Plain text</a></li>
+              <li><a href="#raw-encrypted" class="docs-toc-link">Encrypted documents</a></li>
+            </ul>
+          </li>
+          <li><a href="#encryption" class="docs-toc-link">Encryption</a></li>
+          <li><a href="#markdown" class="docs-toc-link">Markdown &amp; Mermaid</a></li>
+        </ul>
+      </nav>
+    </aside>
+
+    <main class="docs-main">
+      <header class="docs-header">
+        <p class="docs-eyebrow">Documentation</p>
+        <h1 class="docs-title"><strong>notepad</strong><span class="brand-able">able</span></h1>
+        <p class="docs-subtitle">A minimalist text editor that encodes your entire document into the URL. No server, no database, no accounts.</p>
+      </header>
+
+      <section class="docs-section" id="use-cases">
+        <h2>What it's good for</h2>
+        <p><strong>notepad</strong><span class="brand-able">able</span> is built around one idea: the URL <em>is</em> the document. There is no backend storing your text. Everything lives in the hash fragment at the end of the URL.</p>
+        <div class="docs-card-grid">
+          <div class="docs-card">
+            <div class="docs-card-title">Instant sharing</div>
+            <p>Write something, copy the URL, send it. The recipient sees exactly what you wrote — no accounts, no uploads, no expiry date.</p>
+          </div>
+          <div class="docs-card">
+            <div class="docs-card-title">Bookmarkable notes</div>
+            <p>Save a notepadable URL to your bookmarks and the text travels with it. The note is as durable as the bookmark.</p>
+          </div>
+          <div class="docs-card">
+            <div class="docs-card-title">Ephemeral pastes</div>
+            <p>Snippets, draft messages, quick reference text. Nothing lingers on a server because nothing ever reaches one.</p>
+          </div>
+          <div class="docs-card">
+            <div class="docs-card-title">Scripting &amp; automation</div>
+            <p>Use the <a href="#raw-api"><code>/raw</code> API</a> to pull the plain text of any notepadable link directly into a shell script or CI pipeline.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="docs-section" id="how-it-works">
+        <h2>How it works</h2>
+        <p>When you type in the editor, your text is compressed and written to the URL hash. The compression runs entirely in the browser — no round-trip to a server at any point.</p>
+
+        <h3 id="compression">Compression pipeline</h3>
+        <p>Text is compressed in two stages before it reaches the URL:</p>
+        <ol class="docs-ol">
+          <li>
+            <strong>Dictionary encoding.</strong> A built-in dictionary of 4,096 common English words maps each matching word to a 12-bit index. Typical English prose compresses significantly in this step alone. Title-cased variants get a dedicated token so they round-trip without loss.
+          </li>
+          <li>
+            <strong>LZ compression.</strong> The dictionary-encoded binary payload is then run through <a href="https://github.com/pieroxy/lz-string" target="_blank" rel="noopener">lz-string</a>'s <code>compressToEncodedURIComponent</code>, which produces a compact, URL-safe string with no characters that need percent-encoding.
+          </li>
+        </ol>
+        <p>The final string is placed directly after <code>#</code> in the URL.</p>
+
+        <h3 id="url-storage">URL storage</h3>
+        <p>The compressed text lives in the <strong>URL hash fragment</strong> — the part after <code>#</code>. Hash fragments are never sent to the server by the browser, so your text stays entirely on the client. <strong>notepad</strong><span class="brand-able">able</span>'s servers never see it.</p>
+        <p>As a fallback, the last hash is also cached in <code>localStorage</code> so the editor restores your content even if you navigate to <code>/app</code> without a hash.</p>
+
+        <h3 id="limits">Limits</h3>
+        <p>There is no hard server-side limit on URL length, but practical limits exist:</p>
+        <ul class="docs-ul">
+          <li>Most browsers handle URLs up to ~64KB comfortably.</li>
+          <li>Many link-sharing platforms (Slack, Twitter, etc.) truncate or refuse very long URLs. A practical safe limit is roughly <strong>10–14 KB of source text</strong> after compression.</li>
+          <li>The <code>localStorage</code> fallback has the same constraint.</li>
+        </ul>
+      </section>
+
+      <section class="docs-section" id="raw-api">
+        <h2>The /raw API</h2>
+        <p>Any notepadable link can be turned into a plain-text endpoint. Take the hash that normally follows <code>/app#</code> and pass it as a path segment to <code>/raw/</code>. The server decompresses it and responds with <code>Content-Type: text/plain</code>.</p>
+        <p>This is a genuine server-side endpoint — curl-able, script-friendly, and returns raw text with no HTML wrapper.</p>
+
+        <h3 id="raw-plain">Plain text</h3>
+        <p>For a link like <code>notepadable.com/app#IAAAgQi...</code>, the raw equivalent is:</p>
+        <div class="docs-code-block">
+          <div class="docs-code-label">Request</div>
+          <pre><code>curl notepadable.com/raw/IAAAgQi...</code></pre>
+        </div>
+        <div class="docs-code-block">
+          <div class="docs-code-label">Response</div>
+          <pre><code>Your plain text content here.</code></pre>
+        </div>
+
+        <h3 id="raw-encrypted">Encrypted documents</h3>
+        <p>If the document is password-protected, pass the password as a <code>?p=</code> query parameter:</p>
+        <div class="docs-code-block">
+          <div class="docs-code-label">Request</div>
+          <pre><code>curl "notepadable.com/raw/IAAAgQi...?p=yourpassword"</code></pre>
+        </div>
+        <p>If you omit <code>?p=</code> on an encrypted document, the API returns a <code>401</code> with a message telling you to supply the password. A wrong password also returns <code>401</code>.</p>
+        <div class="docs-callout docs-callout--warn">
+          Passwords passed as query parameters may appear in server logs and browser history. For sensitive content, prefer decrypting in the browser via the editor.
+        </div>
+      </section>
+
+      <section class="docs-section" id="encryption">
+        <h2>Encryption</h2>
+        <p>Documents can be password-protected from the editor toolbar. The encryption happens entirely in the browser before the text touches the URL.</p>
+        <ul class="docs-ul">
+          <li><strong>Algorithm:</strong> AES-256-GCM via the Web Crypto API.</li>
+          <li><strong>Key derivation:</strong> PBKDF2 with 100,000 iterations and SHA-256, salted with 16 random bytes per encryption.</li>
+          <li><strong>IV:</strong> 12 random bytes generated fresh for every encryption.</li>
+        </ul>
+        <p>The salt and IV are stored alongside the ciphertext in the URL hash. The password is never stored or transmitted — it exists only in your browser's memory while the tab is open.</p>
+        <div class="docs-callout">
+          Lose the password and the document is unrecoverable. There is no reset mechanism.
+        </div>
+      </section>
+
+      <section class="docs-section" id="markdown">
+        <h2>Markdown &amp; Mermaid</h2>
+        <p>The editor includes a preview mode that renders your text as Markdown using <a href="https://marked.js.org" target="_blank" rel="noopener">marked</a>. Toggle preview from the toolbar or with the keyboard shortcut.</p>
+        <p><a href="https://mermaid.js.org" target="_blank" rel="noopener">Mermaid</a> diagrams are supported in preview mode. Wrap your diagram in a fenced code block tagged <code>mermaid</code>:</p>
+        <div class="docs-code-block">
+          <pre><code>```mermaid
+graph TD
+  A[Start] --> B{Decision}
+  B -->|Yes| C[Do thing]
+  B -->|No| D[Skip]
+```</code></pre>
+        </div>
+        <p>Mermaid is loaded on demand from a CDN when the preview is first opened, so it does not add to the initial page weight.</p>
+      </section>
+    </main>
+  </div>
+
+  <footer class="site-footer">
+    <span>Made by <a href="https://github.com/bicrick" target="_blank" rel="noopener">Bicrick</a></span>
+    <span class="footer-sep">&middot;</span>
+    <a href="https://github.com/bicrick/notepadable" target="_blank" rel="noopener">GitHub</a>
+    <span class="footer-sep">&middot;</span>
+    <a href="/docs">Docs</a>
+    <span class="footer-sep">&middot;</span>
+    <a href="/app">Open editor</a>
+  </footer>
+
+  <script type="module" src="/src/docs.ts"></script>
+</body>
+</html>
