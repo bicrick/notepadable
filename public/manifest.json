@@ -1,6 +1,6 @@
 {
-  "name": "Notepad",
-  "short_name": "Notepad",
+  "name": "notepadable",
+  "short_name": "notepadable",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",

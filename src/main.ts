@@ -1,18 +1,37 @@
 import { createEditor } from './editor'
 import { saveToURL, saveEncryptedToURL, loadFromURL, debounce, getURLLength, getShareableURL } from './url'
-import { initToolbar, updateCapacity, showPasswordPrompt, showToast } from './ui'
+import { initToolbar, updateCapacity, showPasswordPrompt, showToast, setPreviewMode, setPreviewButtonVisible } from './ui'
+import { renderPreview, getRenderedHTML } from './preview'
+import { hasMarkdown } from './markdown-detect'
 import './styles.css'
 
 const editorEl = document.getElementById('editor')!
+const previewEl = document.getElementById('preview')!
 const editor = createEditor(editorEl, {
   onSave: downloadHTML,
 })
+
+let isPreviewMode = false
+const isSharedLink = window.location.hash.length > 1
 
 function syncToURL() {
   const text = editor.getContent()
   const { urlLength } = saveToURL(text)
   updateCapacity(urlLength)
   updateTitle(text)
+  updatePreviewButton(text)
+}
+
+function updatePreviewButton(text: string) {
+  const md = hasMarkdown(text)
+  setPreviewButtonVisible(md)
+  if (!md && isPreviewMode) {
+    isPreviewMode = false
+    setPreviewMode(false)
+    previewEl.style.display = 'none'
+    editorEl.style.display = ''
+    editor.view.focus()
+  }
 }
 
 const debouncedSync = debounce(500, syncToURL)
@@ -21,21 +40,38 @@ editor.onUpdate(() => {
   debouncedSync()
 })
 
+async function enterPreview(text: string) {
+  isPreviewMode = true
+  setPreviewMode(true)
+  editorEl.style.display = 'none'
+  previewEl.style.display = ''
+  await renderPreview(previewEl, text)
+}
+
 async function loadContent() {
+  const fromHash = window.location.hash.length > 1
   const result = loadFromURL()
 
   if (!result) {
     updateCapacity(getURLLength())
     updateTitle('')
+    setPreviewButtonVisible(false)
     return
   }
 
   if (!result.encrypted) {
-    if (result.text) {
-      editor.setContent(result.text)
+    const text = result.text
+    if (text) {
+      editor.setContent(text)
     }
     updateCapacity(getURLLength())
-    updateTitle(result.text)
+    updateTitle(text)
+
+    const md = hasMarkdown(text)
+    setPreviewButtonVisible(md)
+    if (md && fromHash && isSharedLink) {
+      await enterPreview(text)
+    }
     return
   }
 
@@ -45,12 +81,35 @@ async function loadContent() {
       editor.setContent(text)
       updateCapacity(getURLLength())
       updateTitle(text)
-      editor.view.focus()
+
+      const md = hasMarkdown(text)
+      setPreviewButtonVisible(md)
+      if (md && fromHash && isSharedLink) {
+        await enterPreview(text)
+      } else {
+        editor.view.focus()
+      }
       return true
     } catch {
       return false
     }
   })
+}
+
+async function togglePreview() {
+  isPreviewMode = !isPreviewMode
+  setPreviewMode(isPreviewMode)
+
+  if (isPreviewMode) {
+    const text = editor.getContent()
+    editorEl.style.display = 'none'
+    previewEl.style.display = ''
+    await renderPreview(previewEl, text)
+  } else {
+    previewEl.style.display = 'none'
+    editorEl.style.display = ''
+    editor.view.focus()
+  }
 }
 
 async function handleEncryptShare(password: string): Promise<void> {
@@ -70,15 +129,17 @@ function updateTitle(text: string) {
   const firstLine = text.split('\n').find(l => l.trim())
   if (firstLine) {
     const cleaned = firstLine.replace(/^#+\s*/, '').trim()
-    document.title = cleaned || 'Notepad'
+    document.title = cleaned || 'notepadable'
   } else {
-    document.title = 'Notepad'
+    document.title = 'notepadable'
   }
 }
 
-function downloadHTML() {
+async function downloadHTML() {
   const text = editor.getContent()
   const title = document.title
+  const renderedBody = await getRenderedHTML(text)
+
   const html = `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -88,10 +149,16 @@ function downloadHTML() {
 <style>
   body { font: 17px/1.6 system-ui, sans-serif; max-width: 720px; margin: 0 auto; padding: 40px 18px; color: #1a1a1a; }
   @media (prefers-color-scheme: dark) { body { background: #0a0a0a; color: #e0e0e0; } }
+  pre { background: rgba(0,0,0,0.05); padding: 16px; border-radius: 6px; overflow-x: auto; }
+  code { font-family: ui-monospace, monospace; font-size: 0.9em; }
+  blockquote { border-left: 3px solid rgba(0,0,0,0.15); padding-left: 16px; margin-left: 0; opacity: 0.85; }
+  table { border-collapse: collapse; width: 100%; }
+  th, td { border: 1px solid rgba(0,0,0,0.12); padding: 8px 12px; text-align: left; }
+  img { max-width: 100%; }
 </style>
 </head>
 <body>
-<pre style="white-space: pre-wrap; font: inherit;">${escapeHtml(text)}</pre>
+${renderedBody}
 </body>
 </html>`
 
@@ -123,11 +190,18 @@ function escapeHtml(str: string): string {
 }
 
 function newDocument() {
+  if (isPreviewMode) {
+    isPreviewMode = false
+    setPreviewMode(false)
+    previewEl.style.display = 'none'
+    editorEl.style.display = ''
+  }
   editor.setContent('')
   history.replaceState(null, '', window.location.pathname)
   try { localStorage.removeItem('text-area-hash') } catch {}
   updateCapacity(window.location.href.length)
-  document.title = 'Notepad'
+  setPreviewButtonVisible(false)
+  document.title = 'notepadable'
   editor.view.focus()
 }
 
@@ -136,10 +210,13 @@ initToolbar({
   onDownloadHTML: downloadHTML,
   onDownloadTXT: downloadTXT,
   onEncryptShare: handleEncryptShare,
+  onTogglePreview: togglePreview,
 })
 
 loadContent()
-editor.view.focus()
+if (!isPreviewMode) {
+  editor.view.focus()
+}
 
 window.addEventListener('hashchange', () => {
   loadContent()

@@ -15,6 +15,7 @@ export function initToolbar(callbacks: {
   onDownloadHTML: () => void
   onDownloadTXT: () => void
   onEncryptShare: (password: string) => Promise<void>
+  onTogglePreview: () => void
 }) {
   footer = document.getElementById('footer')!
   onEncryptAndCopy = callbacks.onEncryptShare
@@ -24,9 +25,19 @@ export function initToolbar(callbacks: {
       <div class="capacity-fill" id="capacity-fill"></div>
     </div>
     <div class="footer-inner">
-      <button class="footer-brand" title="New document" aria-label="New document">Notepad</button>
+      <button class="footer-brand" title="New document" aria-label="New document"><span class="brand-main">notepad</span><span class="brand-suffix">able</span></button>
       <div class="footer-actions">
         <span class="capacity-label" id="capacity-label"></span>
+        <button class="footer-btn" id="btn-preview" title="Toggle preview" aria-label="Toggle preview" style="display:none">
+          <svg id="icon-preview-eye" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+            <circle cx="12" cy="12" r="3"></circle>
+          </svg>
+          <svg id="icon-preview-edit" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none">
+            <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"></path>
+            <path d="m15 5 4 4"></path>
+          </svg>
+        </button>
         <button class="footer-btn" id="btn-share" title="Share" aria-label="Share">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M8 9h-1a2 2 0 0 0 -2 2v8a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-8a2 2 0 0 0 -2 -2h-1"/>
@@ -59,6 +70,11 @@ export function initToolbar(callbacks: {
   brandBtn.addEventListener('click', () => {
     callbacks.onNew()
     hideDropdown()
+  })
+
+  document.getElementById('btn-preview')!.addEventListener('click', () => {
+    hideDropdown()
+    callbacks.onTogglePreview()
   })
 
   document.getElementById('btn-share')!.addEventListener('click', () => {
@@ -110,27 +126,33 @@ function showShareModal() {
         <span class="modal-title">Share</span>
         <button class="modal-close" aria-label="Close">&times;</button>
       </div>
-      <div class="modal-tabs">
-        <button class="modal-tab active" data-tab="link">Link</button>
-        <button class="modal-tab" data-tab="encrypted">Encrypted</button>
-      </div>
       <div class="modal-body">
-        <div class="modal-pane" id="pane-link">
-          <p class="modal-description">Anyone with this link can view the document.</p>
-          <button class="modal-btn modal-btn-primary" id="modal-copy-link">Copy Link</button>
-        </div>
-        <div class="modal-pane" id="pane-encrypted" style="display:none">
-          <p class="modal-description">Set a password. The recipient will need it to view the document.</p>
-          <div class="modal-input-row">
-            <input type="password" class="modal-input" id="modal-password" placeholder="Password" autocomplete="off" />
-            <button class="modal-toggle-pw" id="modal-toggle-pw" title="Show password" aria-label="Toggle password visibility">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                <circle cx="12" cy="12" r="3"></circle>
-              </svg>
-            </button>
+        <div class="modal-password-area" id="modal-password-area">
+          <div class="modal-password-inner">
+            <div class="modal-input-row">
+              <input type="password" class="modal-input" id="modal-password" placeholder="Set a password" autocomplete="off" />
+              <button class="modal-toggle-pw" id="modal-toggle-pw" title="Show password" aria-label="Toggle visibility">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                  <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+              </button>
+            </div>
           </div>
-          <button class="modal-btn modal-btn-primary" id="modal-encrypt-copy" disabled>Encrypt and Copy Link</button>
+        </div>
+        <div class="split-btn">
+          <button class="split-btn-main" id="modal-action-btn">Copy Link</button>
+          <div class="split-btn-divider"></div>
+          <button class="split-btn-lock" id="modal-lock-toggle" aria-label="Toggle encryption" aria-pressed="false" title="Encrypt link">
+            <svg class="lock-open" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+              <path d="M7 11V7a5 5 0 0 1 9.9-1"></path>
+            </svg>
+            <svg class="lock-closed" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+            </svg>
+          </button>
         </div>
       </div>
     </div>
@@ -140,34 +162,43 @@ function showShareModal() {
   requestAnimationFrame(() => overlay.classList.add('visible'))
 
   const closeBtn = overlay.querySelector('.modal-close') as HTMLButtonElement
-  const tabs = overlay.querySelectorAll('.modal-tab') as NodeListOf<HTMLButtonElement>
-  const paneLink = document.getElementById('pane-link')!
-  const paneEncrypted = document.getElementById('pane-encrypted')!
-  const copyLinkBtn = document.getElementById('modal-copy-link')!
+  const lockToggle = document.getElementById('modal-lock-toggle') as HTMLButtonElement
+  const lockOpen = lockToggle.querySelector('.lock-open') as SVGElement
+  const lockClosed = lockToggle.querySelector('.lock-closed') as SVGElement
+  const passwordArea = document.getElementById('modal-password-area') as HTMLElement
   const passwordInput = document.getElementById('modal-password') as HTMLInputElement
-  const togglePwBtn = document.getElementById('modal-toggle-pw')!
-  const encryptCopyBtn = document.getElementById('modal-encrypt-copy') as HTMLButtonElement
+  const togglePwBtn = document.getElementById('modal-toggle-pw') as HTMLButtonElement
+  const actionBtn = document.getElementById('modal-action-btn') as HTMLButtonElement
+
+  let encrypted = false
+
+  function setEncrypted(value: boolean) {
+    encrypted = value
+    lockToggle.setAttribute('aria-pressed', String(value))
+    lockToggle.classList.toggle('active', value)
+    lockOpen.style.display = value ? 'none' : ''
+    lockClosed.style.display = value ? '' : 'none'
+    lockToggle.title = value ? 'Remove encryption' : 'Encrypt link'
+
+    if (value) {
+      passwordArea.classList.add('visible')
+      actionBtn.textContent = 'Copy Encrypted Link'
+      actionBtn.disabled = !passwordInput.value
+      setTimeout(() => passwordInput.focus(), 250)
+    } else {
+      passwordArea.classList.remove('visible')
+      passwordInput.value = ''
+      actionBtn.textContent = 'Copy Link'
+      actionBtn.disabled = false
+    }
+  }
+
+  setEncrypted(false)
 
   function close() {
     overlay.classList.remove('visible')
     setTimeout(() => overlay.remove(), 200)
   }
-
-  tabs.forEach((tab) => {
-    tab.addEventListener('click', () => {
-      tabs.forEach((t) => t.classList.remove('active'))
-      tab.classList.add('active')
-      const target = tab.dataset.tab
-      if (target === 'link') {
-        paneLink.style.display = ''
-        paneEncrypted.style.display = 'none'
-      } else {
-        paneLink.style.display = 'none'
-        paneEncrypted.style.display = ''
-        passwordInput.focus()
-      }
-    })
-  })
 
   overlay.addEventListener('click', (e) => {
     if (e.target === overlay) close()
@@ -182,45 +213,44 @@ function showShareModal() {
     }
   })
 
-  copyLinkBtn.addEventListener('click', () => {
-    const url = getShareableURL()
-    if (navigator.clipboard) {
-      navigator.clipboard.writeText(url).then(() => {
-        close()
-        showToast('Link copied')
-      })
-    }
-  })
+  lockToggle.addEventListener('click', () => setEncrypted(!encrypted))
 
   passwordInput.addEventListener('input', () => {
-    encryptCopyBtn.disabled = !passwordInput.value
+    if (encrypted) actionBtn.disabled = !passwordInput.value
   })
 
   passwordInput.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' && passwordInput.value) {
-      encryptCopyBtn.click()
-    }
+    if (e.key === 'Enter' && passwordInput.value) actionBtn.click()
   })
 
   togglePwBtn.addEventListener('click', () => {
-    const isPassword = passwordInput.type === 'password'
-    passwordInput.type = isPassword ? 'text' : 'password'
+    passwordInput.type = passwordInput.type === 'password' ? 'text' : 'password'
   })
 
-  encryptCopyBtn.addEventListener('click', async () => {
+  actionBtn.addEventListener('click', async () => {
+    if (!encrypted) {
+      const url = getShareableURL()
+      if (navigator.clipboard) {
+        await navigator.clipboard.writeText(url)
+        close()
+        showToast('Link copied')
+      }
+      return
+    }
+
     const password = passwordInput.value
     if (!password || !onEncryptAndCopy) return
 
-    encryptCopyBtn.disabled = true
-    encryptCopyBtn.textContent = 'Encrypting...'
+    actionBtn.disabled = true
+    actionBtn.textContent = 'Encrypting...'
 
     try {
       await onEncryptAndCopy(password)
       close()
       showToast('Encrypted link copied')
     } catch {
-      encryptCopyBtn.textContent = 'Error -- try again'
-      encryptCopyBtn.disabled = false
+      actionBtn.textContent = 'Error -- try again'
+      actionBtn.disabled = false
     }
   })
 }
@@ -305,6 +335,28 @@ export function showPasswordPrompt(
   })
 
   passwordInput.focus()
+}
+
+// --- Preview Toggle ---
+
+export function setPreviewMode(isPreview: boolean) {
+  const eyeIcon = document.getElementById('icon-preview-eye')
+  const editIcon = document.getElementById('icon-preview-edit')
+  const btn = document.getElementById('btn-preview')
+  if (eyeIcon && editIcon) {
+    eyeIcon.style.display = isPreview ? 'none' : ''
+    editIcon.style.display = isPreview ? '' : 'none'
+  }
+  if (btn) {
+    btn.title = isPreview ? 'Back to editor' : 'Toggle preview'
+  }
+}
+
+export function setPreviewButtonVisible(visible: boolean) {
+  const btn = document.getElementById('btn-preview')
+  if (btn) {
+    btn.style.display = visible ? '' : 'none'
+  }
 }
 
 // --- Capacity + Toast ---
