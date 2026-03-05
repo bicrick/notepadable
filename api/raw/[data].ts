@@ -1,47 +1,54 @@
-import type { VercelRequest, VercelResponse } from '@vercel/node'
 import { decompressAuto } from '../../src/compression'
 
-export default async function handler(req: VercelRequest, res: VercelResponse) {
-  const { data, p } = req.query
+export const config = { runtime: 'edge' }
 
-  if (!data || typeof data !== 'string') {
-    return res.status(400).setHeader('Content-Type', 'text/plain').send('Missing data segment.')
+export default async function handler(request: Request): Promise<Response> {
+  const url = new URL(request.url)
+  const pathParts = url.pathname.split('/')
+  const data = pathParts[pathParts.length - 1]
+  const p = url.searchParams.get('p')
+
+  if (!data) {
+    return new Response('Missing data segment.', {
+      status: 400,
+      headers: { 'Content-Type': 'text/plain' },
+    })
   }
 
   let result
   try {
     result = decompressAuto(data)
   } catch {
-    return res.status(400).setHeader('Content-Type', 'text/plain').send('Invalid or unrecognized data.')
+    return new Response('Invalid or unrecognized data.', {
+      status: 400,
+      headers: { 'Content-Type': 'text/plain' },
+    })
   }
 
   if (!result.encrypted) {
-    return res
-      .status(200)
-      .setHeader('Content-Type', 'text/plain; charset=utf-8')
-      .send(result.text)
+    return new Response(result.text, {
+      status: 200,
+      headers: { 'Content-Type': 'text/plain; charset=utf-8' },
+    })
   }
 
-  // Encrypted content
-  const password = typeof p === 'string' ? p : undefined
-
-  if (!password) {
-    return res
-      .status(401)
-      .setHeader('Content-Type', 'text/plain')
-      .send('This document is encrypted. Pass the password as ?p=YOUR_PASSWORD')
+  if (!p) {
+    return new Response(
+      'This document is encrypted. Pass the password as ?p=YOUR_PASSWORD',
+      { status: 401, headers: { 'Content-Type': 'text/plain' } },
+    )
   }
 
   try {
-    const text = await result.decrypt(password)
-    return res
-      .status(200)
-      .setHeader('Content-Type', 'text/plain; charset=utf-8')
-      .send(text)
+    const text = await result.decrypt(p)
+    return new Response(text, {
+      status: 200,
+      headers: { 'Content-Type': 'text/plain; charset=utf-8' },
+    })
   } catch {
-    return res
-      .status(401)
-      .setHeader('Content-Type', 'text/plain')
-      .send('Wrong password or corrupted data.')
+    return new Response('Wrong password or corrupted data.', {
+      status: 401,
+      headers: { 'Content-Type': 'text/plain' },
+    })
   }
 }
