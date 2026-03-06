@@ -1,4 +1,4 @@
-# **notepad**able
+# [**notepad**able](https://notepadable.com)
 
 A minimalist text editor that encodes your entire document into the URL. No server, no database, no accounts -- just share a link and the recipient gets your full text.
 
