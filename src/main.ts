@@ -1,3 +1,4 @@
+import { selectAll } from '@codemirror/commands'
 import { createEditor } from './editor'
 import { saveToURL, saveEncryptedToURL, loadFromURL, debounce, getURLLength, getShareableURL } from './url'
 import { initToolbar, updateCapacity, showPasswordPrompt, showToast, setPreviewMode, setPreviewButtonVisible } from './ui'
@@ -55,6 +56,12 @@ editor.onUpdate(() => {
   debouncedSync()
 })
 
+previewEl.addEventListener('click', (e) => {
+  if (e.detail === 3 && isPreviewMode) {
+    togglePreview()
+  }
+})
+
 async function enterPreview(text: string) {
   isPreviewMode = true
   setPreviewMode(true)
@@ -84,7 +91,8 @@ async function loadContent() {
 
     const md = hasMarkdown(text)
     setPreviewButtonVisible(md)
-    if (md && fromHash && isSharedLink) {
+    if (fromHash && isSharedLink) {
+      setPreviewButtonVisible(true)
       await enterPreview(text)
     }
     return
@@ -99,7 +107,8 @@ async function loadContent() {
 
       const md = hasMarkdown(text)
       setPreviewButtonVisible(md)
-      if (md && fromHash && isSharedLink) {
+      if (fromHash && isSharedLink) {
+        setPreviewButtonVisible(true)
         await enterPreview(text)
       } else {
         editor.view.focus()
@@ -243,6 +252,15 @@ loadContent()
 if (!isPreviewMode) {
   editor.view.focus()
 }
+
+document.addEventListener('keydown', (e) => {
+  if (!isPreviewMode && e.key === 'a' && (e.metaKey || e.ctrlKey)) {
+    if (editorEl.contains(document.activeElement)) {
+      e.preventDefault()
+      selectAll(editor.view)
+    }
+  }
+})
 
 window.addEventListener('hashchange', () => {
   loadContent()

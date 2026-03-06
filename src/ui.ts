@@ -53,6 +53,12 @@ export function initToolbar(callbacks: {
             <path d="m15 5 4 4"></path>
           </svg>
         </button>
+        <button class="footer-btn" id="btn-copy-link" title="Copy link" aria-label="Copy link">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+            <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+          </svg>
+        </button>
         <button class="footer-btn" id="btn-share" title="Share" aria-label="Share">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M8 9h-1a2 2 0 0 0 -2 2v8a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-8a2 2 0 0 0 -2 -2h-1"/>
@@ -85,6 +91,14 @@ export function initToolbar(callbacks: {
 
   document.getElementById('btn-preview')!.addEventListener('click', () => {
     callbacks.onTogglePreview()
+  })
+
+  document.getElementById('btn-copy-link')!.addEventListener('click', async () => {
+    const url = getShareableURL()
+    if (navigator.clipboard) {
+      await navigator.clipboard.writeText(url)
+      showToast('Link copied')
+    }
   })
 
   document.getElementById('btn-share')!.addEventListener('click', () => {

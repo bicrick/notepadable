@@ -9,8 +9,13 @@ marked.setOptions({
 const renderer = new marked.Renderer()
 const originalCode = renderer.code.bind(renderer)
 
+function isMermaidBlock(lang: string | undefined): boolean {
+  const base = (lang ?? '').trim().toLowerCase().split(/[\s:]+/)[0]
+  return base === 'mermaid'
+}
+
 renderer.code = function (token: Tokens.Code): string {
-  if (token.lang === 'mermaid') {
+  if (isMermaidBlock(token.lang)) {
     return `<div class="mermaid-block"><pre class="mermaid">${escapeHtml(token.text)}</pre></div>`
   }
   return originalCode(token) as string
@@ -39,6 +44,7 @@ async function loadMermaid() {
       startOnLoad: false,
       theme: isDark ? 'dark' : 'default',
       securityLevel: 'loose',
+      suppressErrors: true,
     })
   } catch {
     // CDN unavailable -- mermaid blocks stay as raw text
@@ -53,7 +59,10 @@ async function renderMermaidBlocks(container: HTMLElement) {
   if (!mermaidMod) return
 
   try {
-    await mermaidMod.default.run({ nodes: blocks as NodeListOf<Element> })
+    await mermaidMod.default.run({
+      nodes: blocks as NodeListOf<Element>,
+      suppressErrors: true,
+    })
   } catch {
     // Graceful failure
   }

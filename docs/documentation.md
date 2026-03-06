@@ -1,6 +1,30 @@
-# notepadable
+![1772761697883](image/documentation/1772761697883.png)![1772761704441](image/documentation/1772761704441.png)![1772761711944](image/documentation/1772761711944.png)![1772761764156](image/documentation/1772761764156.png)# notepadable
 
 A minimalist text editor that encodes your entire document into the URL. No server, no database, no accounts.
+
+https://notepadable.com
+
+## Features
+
+- **Compression** — Dictionary encoding plus lz-string compression. Roughly 600–1,200 words fit in a 2,000-character URL, so you can share substantial notes without hitting link length limits.
+- **URL hash** — Share a link and the recipient sees exactly what you wrote. No server, no accounts, no expiry. The document lives in the hash fragment; copy the URL and the text travels with it.
+- **Markdown & Mermaid** — Toggle preview from the toolbar to render Markdown and inline Mermaid diagrams. Use fenced code blocks tagged `mermaid` for flowcharts, sequence diagrams, and more.
+- **Encryption** — Optional password protection from the share menu. AES-256-GCM via the Web Crypto API; the key never leaves your browser.
+- **Theme** — Light, dark, or system preference. Use the theme switcher in the footer.
+
+## At a glance
+
+When you type, your text is compressed and written to the URL hash. The flow looks like this:
+
+```mermaid
+flowchart LR
+  A[Type] --> B[Compress]
+  B --> C[URL hash]
+  C --> D[Share link]
+  D --> E[Recipient sees text]
+```
+
+Compression happens in two stages: dictionary encoding (4,096 common words mapped to 12-bit indices) followed by lz-string. The result is a compact, URL-safe string placed after `#` in the URL. Hash fragments are never sent to the server, so your text stays entirely on the client.
 
 ---
 

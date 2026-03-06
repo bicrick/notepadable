@@ -1,10 +1,19 @@
 import { EditorState, Compartment } from '@codemirror/state'
 import { EditorView, keymap, placeholder } from '@codemirror/view'
-import { defaultKeymap, history, historyKeymap } from '@codemirror/commands'
+import { defaultKeymap, history, historyKeymap, indentLess, insertTab } from '@codemirror/commands'
 import { markdown } from '@codemirror/lang-markdown'
-import { syntaxHighlighting, defaultHighlightStyle } from '@codemirror/language'
+import { HighlightStyle, syntaxHighlighting, defaultHighlightStyle } from '@codemirror/language'
 import { searchKeymap } from '@codemirror/search'
+import { tags } from '@lezer/highlight'
 import { getThemeForScheme, markdownHighlightStyle } from './theme'
+
+const codeBlockLanguageHighlight = HighlightStyle.define([
+  { tag: tags.labelName, color: '#555' },
+], { themeType: 'light' })
+
+const codeBlockLanguageHighlightDark = HighlightStyle.define([
+  { tag: tags.labelName, color: '#cbd5e1' },
+], { themeType: 'dark' })
 import { getTheme, resolveIsDark, THEME_CHANGE_EVENT } from './theme-mode'
 
 export interface EditorInstance {
@@ -43,12 +52,16 @@ export function createEditor(
     extensions: [
       history(),
       keymap.of([
+        { key: 'Tab', run: insertTab },
+        { key: 'Shift-Tab', run: indentLess },
         ...defaultKeymap,
         ...historyKeymap,
         ...searchKeymap,
       ]),
       saveKeymap,
       markdown(),
+      syntaxHighlighting(codeBlockLanguageHighlight),
+      syntaxHighlighting(codeBlockLanguageHighlightDark),
       syntaxHighlighting(defaultHighlightStyle),
       EditorView.lineWrapping,
       themeCompartment.of(getThemeForScheme(isDark)),
