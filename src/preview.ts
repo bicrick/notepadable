@@ -61,7 +61,6 @@ async function renderMermaidBlocks(container: HTMLElement) {
   try {
     await mermaidMod.default.run({
       nodes: blocks as NodeListOf<Element>,
-      suppressErrors: true,
     })
   } catch {
     // Graceful failure
