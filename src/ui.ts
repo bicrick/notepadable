@@ -3,12 +3,11 @@ import { setTheme, getTheme, THEME_CHANGE_EVENT, type ThemeMode } from './theme-
 
 const TOAST_DURATION = 2000
 
-const PANEL_STORAGE_KEY = 'notepadable-footer-expanded'
 const PANEL_EXPANDED_HEIGHT = 185
 
 let footer: HTMLElement | null = null
 let footerPanel: HTMLElement | null = null
-let footerExpanded = localStorage.getItem(PANEL_STORAGE_KEY) === 'true'
+let footerExpanded = false
 let capacityFill: HTMLElement | null = null
 let capacityLabel: HTMLElement | null = null
 let toastEl: HTMLElement | null = null
@@ -76,7 +75,6 @@ export function initToolbar(callbacks: {
   document.getElementById('btn-chevron')!.addEventListener('click', (e) => {
     e.stopPropagation()
     footerExpanded = !footerExpanded
-    localStorage.setItem(PANEL_STORAGE_KEY, String(footerExpanded))
     applyPanelState()
   })
 
