@@ -58,6 +58,14 @@ Output goes to `dist/`. Deploy that folder to Vercel, Netlify, Cloudflare Pages,
 
 [textarea.my](https://github.com/antonmedv/textarea) by Anton Medvedev -- a beautifully simple text editor that stores content in the URL hash. This project takes the same core idea and rebuilds it with better compression and a modern editor.
 
+## License
+
+MIT. See [LICENSE](LICENSE) for details.
+
+## Contributing
+
+This is an open source project. Pull requests are welcome.
+
 ---
 
 Made by [Bicrick](https://github.com/bicrick) · [bicrick.com](https://bicrick.com)
