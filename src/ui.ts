@@ -154,7 +154,7 @@ function applyPanelState() {
     chevron?.classList.add('expanded')
     chevron?.setAttribute('aria-expanded', 'true')
     document.documentElement.style.setProperty('--panel-height', `${PANEL_EXPANDED_HEIGHT}px`)
-    document.documentElement.style.setProperty('--chevron-offset', '36px')
+    document.documentElement.style.setProperty('--chevron-offset', '8px')
   } else {
     footerPanel.classList.remove('expanded')
     chevron?.classList.remove('expanded')
