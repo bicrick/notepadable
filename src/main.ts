@@ -1,3 +1,4 @@
+import './analytics'
 import { selectAll } from '@codemirror/commands'
 import { createEditor } from './editor'
 import { saveToURL, saveEncryptedToURL, loadFromURL, debounce, getURLLength, getShareableURL } from './url'

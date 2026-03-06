@@ -1,3 +1,4 @@
+import './analytics'
 import { marked } from 'marked'
 import { initTheme } from './theme-mode'
 import { initNav } from './nav'

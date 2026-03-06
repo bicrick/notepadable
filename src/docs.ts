@@ -1,3 +1,4 @@
+import './analytics'
 import { initTheme } from './theme-mode'
 import { initNav } from './nav'
 import './landing.css'
