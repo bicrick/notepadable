@@ -10,6 +10,7 @@
   --panel-height: 0px;
   --chevron-offset: 0px;
   --keyboard-offset: 0px;
+  --footer-height: 48px;
 }
 
 html {
@@ -99,7 +100,7 @@ body {
 /* Chevron — floating over canvas, above footer (moves up when panel expanded) */
 #footer-chevron {
   position: fixed;
-  bottom: calc(48px + var(--panel-height, 0px) + var(--chevron-offset, 0px) + var(--keyboard-offset, 0px));
+  bottom: calc(var(--footer-height) + var(--panel-height, 0px) + var(--chevron-offset, 0px) + var(--keyboard-offset, 0px));
   left: 50%;
   transform: translateX(-50%);
   z-index: 101;
@@ -242,6 +243,86 @@ body {
 .capacity-label.capacity-warn { color: #c08800; }
 .capacity-label.capacity-danger { color: #e53e3e; }
 
+/* Desktop: larger footer (150% zoom feel) */
+@media (min-width: 769px) {
+  :root {
+    --footer-height: 70px;
+  }
+
+  .capacity-bar {
+    height: 3px;
+  }
+
+  .footer-inner {
+    height: 66px;
+    padding: 0 1.5rem;
+  }
+
+  .footer-brand {
+    font: 700 1.2rem/1 system-ui, sans-serif;
+    padding: 0.75rem 0.375rem;
+  }
+
+  .footer-btn {
+    width: 54px;
+    height: 54px;
+  }
+
+  .footer-btn svg {
+    width: 24px;
+    height: 24px;
+  }
+
+  .footer-actions {
+    gap: 0.375rem;
+  }
+
+  .capacity-label {
+    font: 1.05rem/1 system-ui, sans-serif;
+    padding: 0 0.75rem;
+  }
+
+  /* Footer panel (expandable) - scaled for desktop */
+  .footer-panel.expanded {
+    height: 260px;
+  }
+
+  .footer-panel-content {
+    gap: 1.125rem;
+    padding: 1.5rem;
+    max-width: 480px;
+  }
+
+  .theme-switcher {
+    padding: 3px;
+    border-radius: 8px;
+  }
+
+  .theme-btn {
+    width: 42px;
+    height: 42px;
+    border-radius: 6px;
+  }
+
+  .theme-btn svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .footer-panel-desc {
+    font: 1.125rem/1.45 system-ui, sans-serif;
+    max-width: 420px;
+  }
+
+  .footer-panel-links {
+    font: 1.2rem/1.4 system-ui, sans-serif;
+  }
+
+  .footer-panel-sep {
+    margin: 0 0.5rem;
+  }
+}
+
 /* Footer panel (expandable) */
 .footer-panel {
   overflow: hidden;
@@ -364,7 +445,7 @@ body {
 /* Toast */
 #toast {
   position: fixed;
-  bottom: calc(60px + var(--panel-height, 0px) + var(--keyboard-offset, 0px));
+  bottom: calc(var(--footer-height) + 12px + var(--panel-height, 0px) + var(--keyboard-offset, 0px));
   left: 50%;
   transform: translateX(-50%) translateY(8px);
   padding: 0.5rem 1rem;
