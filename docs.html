@@ -20,13 +20,37 @@
       <a href="https://github.com/bicrick/notepadable" target="_blank" rel="noopener" class="btn btn-ghost">GitHub</a>
       <a href="/app" class="btn btn-outline">Open editor</a>
     </div>
+    <button class="nav-hamburger" aria-label="Open menu" aria-expanded="false">
+      <svg class="nav-hamburger-icon nav-hamburger-open" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <line x1="3" y1="6" x2="21" y2="6"></line>
+        <line x1="3" y1="12" x2="21" y2="12"></line>
+        <line x1="3" y1="18" x2="21" y2="18"></line>
+      </svg>
+      <svg class="nav-hamburger-icon nav-hamburger-close" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </button>
   </nav>
+  <div class="nav-mobile-overlay" aria-hidden="true">
+    <div class="nav-mobile-menu">
+      <a href="/docs" class="nav-mobile-link nav-mobile-link--active">Docs</a>
+      <a href="https://github.com/bicrick/notepadable" target="_blank" rel="noopener" class="nav-mobile-link">GitHub</a>
+      <a href="/app" class="nav-mobile-link nav-mobile-link--primary">Open editor</a>
+    </div>
+  </div>
 
   <div class="docs-layout">
     <aside class="docs-sidebar">
       <nav class="docs-toc" aria-label="Table of contents">
-        <div class="docs-toc-title">On this page</div>
-        <ul class="docs-toc-list">
+        <button class="docs-toc-mobile-toggle" aria-expanded="false" aria-controls="docs-toc-list">
+          <span>On this page</span>
+          <svg class="docs-toc-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </button>
+        <div class="docs-toc-title" aria-hidden="true">On this page</div>
+        <ul class="docs-toc-list" id="docs-toc-list">
           <li><a href="#use-cases" class="docs-toc-link">What it's good for</a></li>
           <li><a href="#how-it-works" class="docs-toc-link">How it works</a>
             <ul class="docs-toc-sub">

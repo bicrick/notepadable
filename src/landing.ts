@@ -1,8 +1,10 @@
 import { marked } from 'marked'
 import { initTheme } from './theme-mode'
+import { initNav } from './nav'
 import './landing.css'
 
 initTheme()
+initNav()
 
 marked.setOptions({ gfm: true, breaks: true })
 
@@ -89,6 +91,7 @@ function runTypewriter() {
     urlEl!.href = '/app' + hash
     urlEl!.textContent = formatUrlDisplay(hash)
     urlEl!.classList.remove('demo-bar-url--disabled')
+    urlEl!.classList.add('demo-bar-url--ready')
   }
 
   run()

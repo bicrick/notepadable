@@ -441,6 +441,18 @@ html[data-theme="light"] .demo-cursor {
   cursor: default;
 }
 
+/* Dim to blue after animation, then stay solid */
+.demo-bar-url--ready {
+  color: #3b82f6 !important;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: color 0.8s ease;
+}
+
+.demo-bar-url--ready:hover {
+  color: #60a5fa !important;
+}
+
 /* Dark page: demo is light, so bar is light */
 @media (prefers-color-scheme: dark) {
   .demo-bar {
@@ -519,6 +531,111 @@ html[data-theme="light"] .demo-bar-url:hover {
   opacity: 0.4;
 }
 
+/* ── Hamburger button ──────────────────────────────── */
+.nav-hamburger {
+  display: none;
+  position: relative;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+  padding: 0;
+  flex-shrink: 0;
+  transition: background 0.15s;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.nav-hamburger:hover {
+  background: var(--bg-subtle);
+}
+
+.nav-hamburger-icon {
+  position: absolute;
+  transition: opacity 0.15s, transform 0.15s;
+}
+
+.nav-hamburger-close {
+  opacity: 0;
+  transform: rotate(-45deg) scale(0.8);
+}
+
+.nav--open .nav-hamburger-open {
+  opacity: 0;
+  transform: rotate(45deg) scale(0.8);
+}
+
+.nav--open .nav-hamburger-close {
+  opacity: 1;
+  transform: rotate(0deg) scale(1);
+}
+
+/* ── Mobile overlay + menu ─────────────────────────── */
+.nav-mobile-overlay {
+  display: none;
+  position: fixed;
+  inset: 72px 0 0 0;
+  z-index: 99;
+  background: color-mix(in srgb, var(--bg) 97%, transparent);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+.nav--open ~ .nav-mobile-overlay {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.nav-mobile-menu {
+  display: flex;
+  flex-direction: column;
+  padding: 12px 16px 24px;
+  border-bottom: 1px solid var(--border);
+  gap: 2px;
+}
+
+.nav-mobile-link {
+  display: flex;
+  align-items: center;
+  min-height: 48px;
+  padding: 0 12px;
+  border-radius: var(--radius-sm);
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  text-decoration: none;
+  transition: background 0.12s, color 0.12s;
+}
+
+.nav-mobile-link:hover {
+  background: var(--bg-subtle);
+  color: var(--text);
+}
+
+.nav-mobile-link--active {
+  color: var(--text);
+  background: var(--bg-subtle);
+}
+
+.nav-mobile-link--primary {
+  color: var(--text);
+  font-weight: 600;
+  margin-top: 8px;
+  border: 1px solid var(--border);
+  justify-content: center;
+}
+
+.nav-mobile-link--primary:hover {
+  background: var(--bg-subtle);
+}
+
 /* ── Responsive ────────────────────────────────────── */
 @media (max-width: 860px) {
   .hero-row {
@@ -536,6 +653,20 @@ html[data-theme="light"] .demo-bar-url:hover {
 
   .hero-actions {
     justify-content: center;
+  }
+}
+
+@media (max-width: 768px) {
+  .nav-actions {
+    display: none;
+  }
+
+  .nav-hamburger {
+    display: flex;
+  }
+
+  .nav-mobile-overlay {
+    display: block;
   }
 }
 

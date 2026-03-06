@@ -4,7 +4,7 @@ import { setTheme, getTheme, THEME_CHANGE_EVENT, type ThemeMode } from './theme-
 const TOAST_DURATION = 2000
 
 const PANEL_STORAGE_KEY = 'notepadable-footer-expanded'
-const PANEL_EXPANDED_HEIGHT = 165
+const PANEL_EXPANDED_HEIGHT = 185
 
 let footer: HTMLElement | null = null
 let footerPanel: HTMLElement | null = null
@@ -27,17 +27,21 @@ export function initToolbar(callbacks: {
   onEncryptAndCopy = callbacks.onEncryptShare
   onEncryptAndRaw = callbacks.onEncryptRaw
 
+  const chevronContainer = document.getElementById('footer-chevron')!
+  chevronContainer.innerHTML = `
+    <button class="footer-chevron" id="btn-chevron" title="Toggle panel" aria-label="Toggle panel" aria-expanded="false">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="18 15 12 9 6 15"></polyline>
+      </svg>
+    </button>
+  `
+
   footer.innerHTML = `
     <div class="capacity-bar">
       <div class="capacity-fill" id="capacity-fill"></div>
     </div>
     <div class="footer-inner">
       <button class="footer-brand" title="New note" aria-label="New note"><span class="brand-main">notepad</span><span class="brand-suffix">able</span></button>
-      <button class="footer-chevron" id="btn-chevron" title="Toggle panel" aria-label="Toggle panel" aria-expanded="false">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <polyline points="18 15 12 9 6 15"></polyline>
-        </svg>
-      </button>
       <div class="footer-actions">
         <span class="capacity-label" id="capacity-label"></span>
         <button class="footer-btn" id="btn-preview" title="Toggle preview" aria-label="Toggle preview" style="display:none">
@@ -110,7 +114,15 @@ function initFooterPanel() {
       </div>
       <div class="footer-panel-blurb">
         <p class="footer-panel-desc"><span class="footer-panel-brand"><span class="brand-main">notepad</span><span class="brand-suffix">able</span></span> is a stateless editor that stores everything in the URL. Share a link and the recipient gets your full text. Markdown, mermaid diagrams, optional encryption. No server, no accounts.</p>
-        <p class="footer-panel-credit">Made by <a href="https://github.com/bicrick" target="_blank" rel="noopener noreferrer">Bicrick</a> · <a href="https://bicrick.com" target="_blank" rel="noopener noreferrer">bicrick.com</a></p>
+      </div>
+      <div class="footer-panel-links">
+        <a href="/">Home</a>
+        <span class="footer-panel-sep">·</span>
+        <a href="/docs">Docs</a>
+        <span class="footer-panel-sep">·</span>
+        <span>Made by <a href="https://github.com/bicrick" target="_blank" rel="noopener noreferrer">Bicrick</a></span>
+        <span class="footer-panel-sep">·</span>
+        <a href="https://bicrick.com" target="_blank" rel="noopener noreferrer">bicrick.com</a>
       </div>
     </div>
   `
@@ -142,11 +154,13 @@ function applyPanelState() {
     chevron?.classList.add('expanded')
     chevron?.setAttribute('aria-expanded', 'true')
     document.documentElement.style.setProperty('--panel-height', `${PANEL_EXPANDED_HEIGHT}px`)
+    document.documentElement.style.setProperty('--chevron-offset', '36px')
   } else {
     footerPanel.classList.remove('expanded')
     chevron?.classList.remove('expanded')
     chevron?.setAttribute('aria-expanded', 'false')
     document.documentElement.style.setProperty('--panel-height', '0px')
+    document.documentElement.style.setProperty('--chevron-offset', '0px')
   }
 }
 

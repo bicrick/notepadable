@@ -8,6 +8,18 @@ import './styles.css'
 
 initTheme()
 
+// Keep footer above virtual keyboard on mobile
+function updateKeyboardOffset() {
+  const vv = window.visualViewport
+  if (!vv) return
+  const offset = window.innerHeight - vv.height - vv.offsetTop
+  document.documentElement.style.setProperty('--keyboard-offset', `${Math.max(0, offset)}px`)
+}
+if (window.visualViewport) {
+  window.visualViewport.addEventListener('resize', updateKeyboardOffset)
+  window.visualViewport.addEventListener('scroll', updateKeyboardOffset)
+}
+
 const editorEl = document.getElementById('editor')!
 const previewEl = document.getElementById('preview')!
 const editor = createEditor(editorEl, {

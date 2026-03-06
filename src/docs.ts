@@ -1,8 +1,29 @@
 import { initTheme } from './theme-mode'
+import { initNav } from './nav'
 import './landing.css'
 import './docs.css'
 
 initTheme()
+initNav()
+
+// Mobile TOC collapsible toggle
+const tocNav = document.querySelector<HTMLElement>('.docs-toc')
+const tocToggle = document.querySelector<HTMLButtonElement>('.docs-toc-mobile-toggle')
+
+if (tocNav && tocToggle) {
+  tocToggle.addEventListener('click', () => {
+    const expanded = tocNav.classList.toggle('docs-toc--expanded')
+    tocToggle.setAttribute('aria-expanded', String(expanded))
+  })
+
+  // Close TOC on link click (navigates to section)
+  tocNav.querySelectorAll('.docs-toc-link').forEach((link) => {
+    link.addEventListener('click', () => {
+      tocNav.classList.remove('docs-toc--expanded')
+      tocToggle.setAttribute('aria-expanded', 'false')
+    })
+  })
+}
 
 // Highlight the active TOC link based on scroll position
 const tocLinks = Array.from(document.querySelectorAll<HTMLAnchorElement>('.docs-toc-link'))
