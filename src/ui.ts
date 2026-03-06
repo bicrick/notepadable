@@ -118,7 +118,7 @@ function initFooterPanel() {
         <span class="footer-panel-sep">·</span>
         <a href="/docs">Docs</a>
         <span class="footer-panel-sep">·</span>
-        <span>Made by <a href="https://github.com/bicrick" target="_blank" rel="noopener noreferrer">Bicrick</a></span>
+        <span>Made by <a href="https://bicrick.com" target="_blank" rel="noopener noreferrer">Bicrick</a></span>
         <span class="footer-panel-sep">·</span>
         <a href="https://bicrick.com" target="_blank" rel="noopener noreferrer">bicrick.com</a>
       </div>

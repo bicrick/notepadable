@@ -157,6 +157,9 @@ a {
 }
 
 .nav-brand {
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
   display: flex;
   align-items: center;
   gap: 10px;
@@ -414,6 +417,9 @@ html[data-theme="light"] .demo-cursor {
   font: 700 13px/1 system-ui, sans-serif;
   color: rgba(255, 255, 255, 0.65);
   flex-shrink: 0;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
 }
 
 .demo-bar-faint {

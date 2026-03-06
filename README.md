@@ -1,8 +1,14 @@
 # [**notepad**able](https://notepadable.com)
 
+<p align="center">
+  <img src="docs/notepadable-logo.png" alt="notepadable logo">
+</p>
+
 A minimalist text editor that encodes your entire document into the URL. No server, no database, no accounts -- just share a link and the recipient gets your full text.
 
-![notepadable app preview](docs/readme-image.png)
+<p align="center">
+  <img src="docs/readme-image.png" alt="notepadable app preview">
+</p>
 
 Built with TypeScript, CodeMirror 6, and a custom hybrid compression pipeline that squeezes roughly 2x more text into a URL than standard deflate + base64.
 
@@ -52,7 +58,7 @@ npm run dev
 npm run build
 ```
 
-Output goes to `dist/`. Deploy that folder to Vercel, Netlify, Cloudflare Pages, or any static host. The `docs/readme-image.png` is documentation-only and is not included in the build.
+Output goes to `dist/`. Deploy that folder to Vercel, Netlify, Cloudflare Pages, or any static host. The `docs/` images are documentation-only and are not included in the build.
 
 ## Inspired by
 
