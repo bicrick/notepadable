@@ -1,26 +1,13 @@
 import { selectAll } from '@codemirror/commands'
 import { createEditor } from './editor'
 import { saveToURL, saveEncryptedToURL, loadFromURL, debounce, getURLLength, getShareableURL } from './url'
-import { initToolbar, updateCapacity, showPasswordPrompt, showToast, setPreviewMode, setPreviewButtonVisible, collapseFooterPanel } from './ui'
+import { initToolbar, updateCapacity, showPasswordPrompt, showToast, setPreviewMode, setPreviewButtonVisible } from './ui'
 import { renderPreview, getRenderedHTML } from './preview'
 import { hasMarkdown } from './markdown-detect'
 import { initTheme, THEME_CHANGE_EVENT } from './theme-mode'
 import './styles.css'
 
 initTheme()
-
-// Keep footer above virtual keyboard on mobile
-function updateKeyboardOffset() {
-  const vv = window.visualViewport
-  if (!vv) return
-  const keyboardHeight = Math.max(0, window.innerHeight - vv.height)
-  document.documentElement.style.setProperty('--keyboard-offset', `${keyboardHeight}px`)
-  if (keyboardHeight > 0) collapseFooterPanel()
-}
-if (window.visualViewport) {
-  window.visualViewport.addEventListener('resize', updateKeyboardOffset)
-  updateKeyboardOffset()
-}
 
 const editorEl = document.getElementById('editor')!
 const previewEl = document.getElementById('preview')!

@@ -9,7 +9,6 @@
 :root {
   --panel-height: 0px;
   --chevron-offset: 0px;
-  --keyboard-offset: 0px;
   --footer-height: 48px;
 }
 
@@ -87,10 +86,10 @@ body {
   #preview a { color: #58a6ff; }
 }
 
-/* Footer container — above keyboard when typing */
+/* Footer container — fixed at bottom */
 #footer-container {
   position: fixed;
-  bottom: calc(var(--keyboard-offset, 0) + env(safe-area-inset-bottom, 0px));
+  bottom: env(safe-area-inset-bottom, 0px);
   left: 0;
   right: 0;
   z-index: 100;
@@ -102,7 +101,7 @@ body {
 /* Chevron — floating over canvas, above footer (moves up when panel expanded) */
 #footer-chevron {
   position: fixed;
-  bottom: calc(var(--footer-height) + var(--panel-height, 0px) + var(--chevron-offset, 0px) + var(--keyboard-offset, 0px) + env(safe-area-inset-bottom, 0px));
+  bottom: calc(var(--footer-height) + var(--panel-height, 0px) + var(--chevron-offset, 0px) + env(safe-area-inset-bottom, 0px));
   left: 50%;
   transform: translateX(-50%);
   z-index: 101;
@@ -477,7 +476,7 @@ body {
 /* Toast */
 #toast {
   position: fixed;
-  bottom: calc(var(--footer-height) + 12px + var(--panel-height, 0px) + var(--keyboard-offset, 0px) + env(safe-area-inset-bottom, 0px));
+  bottom: calc(var(--footer-height) + 12px + var(--panel-height, 0px) + env(safe-area-inset-bottom, 0px));
   left: 50%;
   transform: translateX(-50%) translateY(8px);
   padding: 0.5rem 1rem;
@@ -766,7 +765,7 @@ html[data-theme="light"] .modal-input { border-color: rgba(0, 0, 0, 0.15); }
 html[data-theme="light"] .modal-input:focus { border-color: #007aff; }
 html[data-theme="light"] #toast { background: rgba(0, 0, 0, 0.8); }
 
-/* Mobile: keyboard-aware footer */
+/* Mobile */
 @media (max-width: 768px) {
   #editor .cm-content {
     padding: 1rem 1rem 5rem;

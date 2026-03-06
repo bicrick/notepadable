@@ -165,12 +165,6 @@ function updateThemeSwitcherUI() {
   })
 }
 
-export function collapseFooterPanel() {
-  if (!footerExpanded) return
-  footerExpanded = false
-  applyPanelState()
-}
-
 function applyPanelState() {
   if (!footerPanel) return
   const chevron = document.getElementById('btn-chevron')
