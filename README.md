@@ -1,82 +1,10 @@
-# <strong>notepad</strong><span style="opacity:0.5;font-weight:400">able</span>
+# **notepad**able
 
 A minimalist text editor that encodes your entire document into the URL. No server, no database, no accounts -- just share a link and the recipient gets your full text.
 
 ![notepadable app preview](docs/readme-image.png)
 
 Built with TypeScript, CodeMirror 6, and a custom hybrid compression pipeline that squeezes roughly 2x more text into a URL than standard deflate + base64.
-
----
-
-## Branding & UI
-
-The logo uses a two-part treatment: **notepad** in full weight, **able** muted:
-
-```html
-<span class="nav-name">
-  <strong>notepad</strong>
-  <span class="nav-name-muted">able</span>
-</span>
-```
-
-```css
-.nav-name {
-  font-size: 2rem;
-  font-weight: 600;
-  letter-spacing: -0.01em;
-}
-
-.nav-name strong { font-weight: 600; }
-
-.nav-name-muted {
-  font-weight: 400;
-  opacity: 0.5;
-}
-```
-
-### Design tokens
-
-| Token | Light | Dark |
-|-------|-------|------|
-| `--bg` | `#f5f5f5` | `#1a1a1a` |
-| `--text` | `#1a1a1a` | `#e0e0e0` |
-| `--accent` | `#1a6ef5` | `#3b82f6` |
-| `--radius` | `12px` | `12px` |
-
-### Key UI elements
-
-**Primary button:**
-```html
-<a href="/app" class="btn btn-primary">Open editor</a>
-```
-
-**Demo window** (inverts theme: light page = dark card, dark page = light card):
-```html
-<div class="demo-window">
-  <div class="demo-content">
-    <div class="demo-text">Your text here...</div>
-  </div>
-  <div class="demo-bar">
-    <span class="demo-bar-brand">notepad<span class="demo-bar-faint">able</span></span>
-    <a class="demo-bar-url" href="/app#">notepadable.com/app#</a>
-  </div>
-</div>
-```
-
-**Nav structure:**
-```html
-<nav class="nav">
-  <a href="/" class="nav-brand">
-    <span class="nav-name"><strong>notepad</strong><span class="nav-name-muted">able</span></span>
-  </a>
-  <div class="nav-actions">
-    <a href="/docs" class="btn btn-ghost">Docs</a>
-    <a href="/app" class="btn btn-outline">Open editor</a>
-  </div>
-</nav>
-```
-
----
 
 ## How it works
 
@@ -124,7 +52,7 @@ npm run dev
 npm run build
 ```
 
-Output goes to `dist/`. Deploy that folder to Vercel, Netlify, Cloudflare Pages, or any static host. The `readme-image.png` in the project root is documentation-only and is not included in the build.
+Output goes to `dist/`. Deploy that folder to Vercel, Netlify, Cloudflare Pages, or any static host. The `docs/readme-image.png` is documentation-only and is not included in the build.
 
 ## Inspired by
 
