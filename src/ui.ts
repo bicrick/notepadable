@@ -40,7 +40,17 @@ export function initToolbar(callbacks: {
       <div class="capacity-fill" id="capacity-fill"></div>
     </div>
     <div class="footer-inner">
-      <button class="footer-brand" title="New note" aria-label="New note"><span class="brand-main">notepad</span><span class="brand-suffix">able</span></button>
+      <div class="footer-brand-area">
+        <a class="footer-brand-link" href="/" title="Home" aria-label="Home"><span class="brand-main">notepad</span><span class="brand-suffix">able</span></a>
+        <button class="footer-btn-new" id="btn-new-note" title="New note" aria-label="New note">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+            <line x1="12" y1="18" x2="12" y2="12"/>
+            <line x1="9" y1="15" x2="15" y2="15"/>
+          </svg>
+        </button>
+      </div>
       <div class="footer-actions">
         <span class="capacity-label" id="capacity-label"></span>
         <button class="footer-btn" id="btn-preview" title="Toggle preview" aria-label="Toggle preview" style="display:none">
@@ -84,8 +94,7 @@ export function initToolbar(callbacks: {
     applyPanelState()
   })
 
-  const brandBtn = footer.querySelector('.footer-brand') as HTMLButtonElement
-  brandBtn.addEventListener('click', () => {
+  document.getElementById('btn-new-note')!.addEventListener('click', () => {
     callbacks.onNew()
   })
 
@@ -154,6 +163,12 @@ function updateThemeSwitcherUI() {
     btn.setAttribute('aria-pressed', String(mode === current))
     btn.classList.toggle('active', mode === current)
   })
+}
+
+export function collapseFooterPanel() {
+  if (!footerExpanded) return
+  footerExpanded = false
+  applyPanelState()
 }
 
 function applyPanelState() {
