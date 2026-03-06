@@ -166,7 +166,12 @@ a {
 
 .nav-name {
   font-size: 2rem;
+  font-weight: 600;
   letter-spacing: -0.01em;
+}
+
+.nav-name strong {
+  font-weight: 600;
 }
 
 .nav-name-muted {
