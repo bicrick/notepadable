@@ -1,5 +1,9 @@
 # [**notepad**able](https://notepadable.com)
 
+![Made with TypeScript](https://img.shields.io/badge/Made%20with-TypeScript-3178c6.svg)
+![Open Source Love](https://badges.frapsoft.com/os/v1/open-source.svg?v=103)
+![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)
+
 <p align="center">
   <img src="docs/notepadable-logo.png" alt="notepadable logo">
 </p>
