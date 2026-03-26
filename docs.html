@@ -58,6 +58,7 @@
           <li><a href="#how-it-works" class="docs-toc-link">How it works</a>
             <ul class="docs-toc-sub">
               <li><a href="#compression" class="docs-toc-link">Compression pipeline</a></li>
+              <li><a href="#encoding-walkthrough" class="docs-toc-link">Encoding walkthrough</a></li>
               <li><a href="#url-storage" class="docs-toc-link">URL storage</a></li>
               <li><a href="#limits" class="docs-toc-link">Limits</a></li>
             </ul>
@@ -119,6 +120,103 @@
           </li>
         </ol>
         <p>The final string is placed directly after <code>#</code> in the URL.</p>
+
+        <h3 id="encoding-walkthrough">Encoding walkthrough</h3>
+        <p>Take the sample sentence <code>The cat is happy</code>. The encoder first splits it into words and separators, then turns each token into either a dictionary reference or a literal byte sequence before packing the bits into bytes.</p>
+
+        <div class="docs-flow" aria-label="Encoding pipeline steps">
+          <div class="docs-flow-step">
+            <div class="docs-flow-label">1. Raw text</div>
+            <p><code>The cat is happy</code></p>
+          </div>
+          <div class="docs-flow-step">
+            <div class="docs-flow-label">2. Tokens</div>
+            <p><code>The</code> <code> </code> <code>cat</code> <code> </code> <code>is</code> <code> </code> <code>happy</code></p>
+          </div>
+          <div class="docs-flow-step">
+            <div class="docs-flow-label">3. Dict bits</div>
+            <p>Words become dictionary indexes. Spaces stay as 1-byte literals.</p>
+          </div>
+          <div class="docs-flow-step">
+            <div class="docs-flow-label">4. Packed bytes</div>
+            <p><code>80 00 04 04 80 DB F0 12 00 03 C0 48 09 FE</code></p>
+          </div>
+          <div class="docs-flow-step">
+            <div class="docs-flow-label">5. Payload</div>
+            <p><code>01 00</code> + dict bytes</p>
+          </div>
+          <div class="docs-flow-step">
+            <div class="docs-flow-label">6. Final hash</div>
+            <p><code>IAAAASAglg2wDwJBAYAAMAkCQA-oA</code></p>
+          </div>
+        </div>
+
+        <div class="docs-table-wrap">
+          <table class="docs-table">
+            <thead>
+              <tr>
+                <th>Token</th>
+                <th>Encoding</th>
+                <th>Bits written</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>The</code></td>
+                <td>Title-case dictionary word, using the index for <code>the</code> (<code>0</code>)</td>
+                <td><code>1</code> + <code>00000000</code> + <code>000000000000</code></td>
+              </tr>
+              <tr>
+                <td><code> </code></td>
+                <td>Literal space, UTF-8 length <code>1</code>, byte <code>0x20</code></td>
+                <td><code>1</code> + <code>00000001</code> + <code>00100000</code></td>
+              </tr>
+              <tr>
+                <td><code>cat</code></td>
+                <td>Lowercase dictionary word, index <code>1759</code></td>
+                <td><code>0</code> + <code>011011011111</code></td>
+              </tr>
+              <tr>
+                <td><code> </code></td>
+                <td>Literal space, UTF-8 length <code>1</code>, byte <code>0x20</code></td>
+                <td><code>1</code> + <code>00000001</code> + <code>00100000</code></td>
+              </tr>
+              <tr>
+                <td><code>is</code></td>
+                <td>Lowercase dictionary word, index <code>7</code></td>
+                <td><code>0</code> + <code>000000000111</code></td>
+              </tr>
+              <tr>
+                <td><code> </code></td>
+                <td>Literal space, UTF-8 length <code>1</code>, byte <code>0x20</code></td>
+                <td><code>1</code> + <code>00000001</code> + <code>00100000</code></td>
+              </tr>
+              <tr>
+                <td><code>happy</code></td>
+                <td>Lowercase dictionary word, index <code>1279</code></td>
+                <td><code>0</code> + <code>010011111111</code></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p>Those token writes add up to <code>111</code> meaningful bits, which the bit writer pads to <code>112</code> so it can flush exactly <code>14</code> bytes:</p>
+        <div class="docs-code-block">
+          <div class="docs-code-label">Dictionary-encoded bytes</div>
+          <pre><code>80 00 04 04 80 DB F0 12 00 03 C0 48 09 FE</code></pre>
+        </div>
+
+        <p>The plain-text payload adds a version byte and a flags byte in front of that stream:</p>
+        <div class="docs-code-block">
+          <div class="docs-code-label">Payload bytes</div>
+          <pre><code>[version=01] [flags=00] [dict=80 00 04 04 80 DB F0 12 00 03 C0 48 09 FE]</code></pre>
+        </div>
+
+        <p><code>toBinaryString()</code> then turns those <code>16</code> payload bytes into a <code>16</code>-character binary string, and <code>compressToEncodedURIComponent()</code> converts that into the final URL-safe fragment:</p>
+        <div class="docs-code-block">
+          <div class="docs-code-label">Final URL hash</div>
+          <pre><code>IAAAASAglg2wDwJBAYAAMAkCQA-oA</code></pre>
+        </div>
 
         <h3 id="url-storage">URL storage</h3>
         <p>The compressed text lives in the <strong>URL hash fragment</strong> — the part after <code>#</code>. Hash fragments are never sent to the server by the browser, so your text stays entirely on the client. <strong>notepad</strong><span class="brand-able">able</span>'s servers never see it.</p>
